@@ -9,7 +9,7 @@ import AuthButton from "../components/AuthButton";
 import { requireAuthentication } from "../utils/auth";
 
 const DashBoard: NextPage = ({
-  session,
+  authenticatedUser,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <>
@@ -23,11 +23,13 @@ const DashBoard: NextPage = ({
 
 export default DashBoard;
 
-export const getServerSideProps: GetServerSideProps = async (context) =>
-  requireAuthentication(context, (session: Session) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireAuthentication(context, ({ session }: { session: Session }) => {
+    const { user: authenticatedUser } = session;
     return {
       props: {
-        session,
+        authenticatedUser,
       },
     };
   });
+};

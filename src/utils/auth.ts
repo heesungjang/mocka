@@ -6,6 +6,7 @@ export const requireAuthentication = async (
   callback: any
 ) => {
   const session = await getSession(context);
+
   if (!session) {
     return {
       redirect: {
