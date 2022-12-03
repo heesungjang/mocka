@@ -18,7 +18,7 @@ const Home: NextPage = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#000000] to-[#15162c]">
+      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#0f0e0e] to-[#15162c]">
         <div className="container relative flex max-w-lg flex-col items-center justify-center gap-12 px-4 py-16 md:max-w-3xl">
           <span className=" absolute left-12 top-10 text-2xl md:left-10 md:top-5 md:text-5xl">
             👋
