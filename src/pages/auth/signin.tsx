@@ -3,7 +3,6 @@ import { type Provider } from "next-auth/providers";
 import { getProviders, signIn } from "next-auth/react";
 import { type NextPage, type GetServerSideProps } from "next";
 import { FcGoogle } from "react-icons/fc";
-import DashBoard from "../dashboard";
 
 interface ISignIn {
   providers: Provider[];
@@ -23,7 +22,7 @@ const SignIn: NextPage<ISignIn> = ({ providers }) => {
         </span>
       </div>
 
-      <div className="flex w-80 flex-col">
+      <div className="mt-6 flex w-80 flex-col">
         <input
           className="mt-10 h-12 w-full rounded-md px-5"
           placeholder="your@email.com"
