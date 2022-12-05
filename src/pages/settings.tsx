@@ -6,17 +6,17 @@ import {
 import { type Session } from "next-auth";
 import { requireAuthentication } from "../utils/auth";
 
-const DashBoard: NextPage = ({
+const Settings: NextPage = ({
   authenticatedUser,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <div className="h-screen flex-1 p-14 pt-20">
-      <h1 className="text-2xl font-semibold ">Home Page</h1>
+      <h1 className="text-2xl font-semibold ">Settings Page</h1>
     </div>
   );
 };
 
-export default DashBoard;
+export default Settings;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return requireAuthentication(context, ({ session }: { session: Session }) => {

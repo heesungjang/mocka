@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
 import { Inter } from "@next/font/google";
+import Layout from "../components/AppLayout";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -15,7 +16,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <main className={inter.className}>
-        <Component {...pageProps} />
+        {session ? (
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        ) : (
+          <Component {...pageProps} />
+        )}
       </main>
     </SessionProvider>
   );
