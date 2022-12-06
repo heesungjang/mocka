@@ -4,14 +4,16 @@ import {
   type NextPage,
 } from "next";
 import { type Session } from "next-auth";
+import { signOut } from "next-auth/react";
 import { requireAuthentication } from "../utils/auth";
 
 const Settings: NextPage = ({
   authenticatedUser,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
-    <div className="h-screen flex-1 p-14 pt-20">
+    <div>
       <h1 className="text-2xl font-semibold ">Settings Page</h1>
+      <button onClick={() => signOut()}>logout</button>
     </div>
   );
 };

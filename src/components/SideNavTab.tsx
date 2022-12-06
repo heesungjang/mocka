@@ -15,8 +15,8 @@ const Menus = [
 
 const SideNavTab = () => {
   return (
-    <div className="relative h-screen w-16 bg-[#F9FAFB] p-4 pt-6  duration-200 md:w-56">
-      <div className="flex items-center">
+    <div className="relative h-screen w-16 bg-[#F9FAFB] pl-4 pr-4 pt-6 md:w-56">
+      <NextLink href="/dashboard" className="flex items-center ">
         <Image
           className="md:ml-2 md:mr-3 md:mb-1"
           src="/assets/logo.png"
@@ -27,12 +27,22 @@ const SideNavTab = () => {
         <h1 className="text-md hidden origin-left font-semibold  capitalize text-black duration-200 md:block">
           Mocka.com
         </h1>
+      </NextLink>
+      <div className="flex h-[92%] flex-col justify-between pt-5">
+        <div>
+          <ul className="flex flex-col">
+            {Menus.map((Menu, index) => (
+              <NavItem text={Menu.title} href={Menu.href} key={index} />
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <span className="hidden px-3 text-xs text-neutral-400 md:block">
+            copyright &copy; {new Date().getFullYear()} Mocka
+          </span>
+        </div>
       </div>
-      <ul className="flex flex-col pt-5">
-        {Menus.map((Menu, index) => (
-          <NavItem text={Menu.title} href={Menu.href} key={index} />
-        ))}
-      </ul>
     </div>
   );
 };
@@ -46,7 +56,7 @@ const NavItem = ({ href = "", text = "" }: { href: string; text: string }) => {
       className={cn(
         isActive
           ? "bg-gray-200 font-normal text-black"
-          : "font-normal text-gray-500 hover:bg-gray-100",
+          : "font-normal text-neutral-500 hover:bg-gray-100",
         "mb-2 flex cursor-pointer items-center justify-center  rounded-lg p-1 px-2 py-2 transition-all md:flex md:items-center md:justify-start md:px-3 md:py-2"
       )}
       onClick={() => handleNav()}

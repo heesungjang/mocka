@@ -10,7 +10,7 @@ const Bookings: NextPage = ({
   authenticatedUser,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
-    <div className="h-screen flex-1 p-14 pt-20">
+    <div>
       <h1 className="text-2xl font-semibold ">Booking Page</h1>
     </div>
   );

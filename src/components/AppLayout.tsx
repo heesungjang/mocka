@@ -4,7 +4,7 @@ const AppLayout = ({ children }: any) => {
   return (
     <div className="flex">
       <SideNavTab />
-      <div className="h-screen flex-1 p-14 pt-20">{children}</div>
+      <div className="relative h-screen flex-1 px-12 py-10">{children}</div>
     </div>
   );
 };
