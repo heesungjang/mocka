@@ -1,24 +1,90 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import {
+  Fragment,
+  useState,
+  createContext,
+  type Dispatch,
+  type SetStateAction,
+  useContext,
+  cloneElement,
+} from "react";
 
-export default function Modal(props: any) {
-  const { isOpen, closeModal, openModal } = props;
+type ModalContextType = {
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+const callAll =
+  (...fns: any) =>
+  (...args: any) =>
+    fns.forEach((fn: any) => fn && fn(...args));
+
+const ModalContext = createContext<ModalContextType | undefined>(undefined);
+
+const useModalContext = () => {
+  const context = useContext(ModalContext);
+  if (context === undefined) {
+    throw new Error("useTodoContext must be within TodoProvider");
+  }
+  return context;
+};
+
+const Modal = (props: { children: JSX.Element[] }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return <ModalContext.Provider value={{ isOpen, setIsOpen }} {...props} />;
+};
+
+const ModalDismissButton = ({ children: child }: { children: JSX.Element }) => {
+  const { setIsOpen } = useModalContext();
+  return cloneElement(child, {
+    onClick: callAll(() => setIsOpen(false), child.props.onClick),
+  });
+};
+
+const ModalOpenButton = ({ children: child }: { children: JSX.Element }) => {
+  const { setIsOpen } = useModalContext();
+  return cloneElement(child, {
+    onClick: callAll(() => setIsOpen(true), child.props.onClick),
+  });
+};
+
+const ModalContentsBase = (props: any) => {
+  const { isOpen, setIsOpen } = useModalContext();
+  const closeModal = () => setIsOpen(false);
+  return (
+    <Transition appear show={isOpen} as={Fragment} {...props}>
+      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        {}
+      </Dialog>
+    </Transition>
+  );
+};
+
+const BackDrop = () => {
+  return (
+    <Transition.Child
+      as={Fragment}
+      enter="ease-out duration-300"
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
+      leave="ease-in duration-200"
+      leaveFrom="opacity-100"
+      leaveTo="opacity-0"
+    >
+      <div className="fixed inset-0 bg-black bg-opacity-25" />
+    </Transition.Child>
+  );
+};
+
+const ModalContents = ({ title, children }: any) => {
+  const { isOpen, setIsOpen } = useModalContext();
+  const closeModal = () => setIsOpen(false);
 
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
+          <BackDrop />
 
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -36,24 +102,9 @@ export default function Modal(props: any) {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Payment successful
+                    {title}
                   </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Your payment has been successfully submitted. We’ve sent
-                      you an email with all of the details of your order.
-                    </p>
-                  </div>
-
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={closeModal}
-                    >
-                      Got it, thanks!
-                    </button>
-                  </div>
+                  {children}
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -62,4 +113,6 @@ export default function Modal(props: any) {
       </Transition>
     </>
   );
-}
+};
+
+export { Modal, ModalDismissButton, ModalOpenButton, ModalContents };
