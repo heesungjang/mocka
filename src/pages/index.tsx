@@ -18,14 +18,16 @@ const Home: NextPage = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#0f0e0e] to-[#15162c]">
+      <main className="flex min-h-screen flex-col items-center justify-center bg-[#F3F3F3]">
         <div className="container relative flex max-w-lg flex-col items-center justify-center gap-12 px-4 py-16 md:max-w-3xl">
           <span className=" absolute left-12 top-10 text-2xl md:left-10 md:top-5 md:text-5xl">
             👋
           </span>
-          <h1 className="text-center text-5xl font-extrabold tracking-tight text-white md:text-[5rem]">
+          <h1 className="text-center text-5xl font-extrabold leading-snug tracking-tight text-black md:text-[5rem]">
             Spend Valuable Minutes In
-            <span className="leading-snug text-[#c050f8]"> Mocka</span>
+            <span className=" text-border-black text-shadow-black ml-3 bg-black px-6 text-white ">
+              Mocka
+            </span>
           </h1>
 
           <div className="flex flex-col items-center gap-2">

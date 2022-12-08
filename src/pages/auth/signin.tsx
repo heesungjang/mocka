@@ -10,14 +10,14 @@ interface ISignIn {
 const SignIn: NextPage<ISignIn> = ({ providers }) => {
   const [email, setEmail] = useState("");
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#0f0e0e] to-[#15162c]">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-[#F3F3F3]">
       <div className="flex flex-col items-start">
-        <h1 className="mb-5 text-center text-6xl font-extrabold tracking-tight text-white">
+        <h1 className="mb-5 text-center text-6xl font-extrabold tracking-tight text-black">
           Happening Now,
         </h1>
-        <span className="text-center text-3xl font-extrabold tracking-tight text-white">
+        <span className="text-center text-3xl font-extrabold tracking-tight text-black">
           Join{" "}
-          <span className="leading-snug text-[#c050f8] underline">Mocka</span>{" "}
+          <span className="bg-black px-2 leading-snug text-white">Mocka</span>{" "}
           Today
         </span>
       </div>
@@ -30,7 +30,7 @@ const SignIn: NextPage<ISignIn> = ({ providers }) => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <button
-          className="mt-5 inline-flex items-center justify-center rounded-md bg-[#c050f8]/60 px-10 py-3 font-semibold text-white no-underline transition hover:bg-[#c050f8]/20"
+          className="mt-5 inline-flex items-center justify-center rounded-md bg-black px-10 py-3 font-normal text-white no-underline transition hover:bg-black/80"
           onClick={() => signIn("email", { email, callbackUrl: "/dashboard" })}
         >
           Continue with Email
@@ -48,7 +48,7 @@ const SignIn: NextPage<ISignIn> = ({ providers }) => {
               provider.name !== "Email" && (
                 <div key={provider.name}>
                   <button
-                    className="inline-flex w-full items-center justify-center rounded-md bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+                    className="inline-flex w-full items-center justify-center rounded-md border border-solid  border-neutral-300 px-10 py-3 font-normal text-black no-underline transition hover:bg-neutral-200/[0.95]"
                     onClick={() =>
                       signIn(provider.id, { callbackUrl: "/dashboard" })
                     }
