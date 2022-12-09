@@ -23,7 +23,7 @@ const ProfileTab = ({
         <input
           placeholder="e.g. Fan Chat with Sophie"
           id="title"
-          className="mb-4 w-full appearance-none rounded border-2 border-gray-100 bg-neutral-100 py-2 px-4 leading-tight text-black placeholder-neutral-400 shadow-sm focus:border-black focus:bg-white focus:outline-none"
+          className="mb-4 w-full appearance-none rounded border-2 border-gray-100 bg-neutral-100 py-2 px-4 leading-tight text-black placeholder-neutral-500 shadow-sm focus:border-black focus:bg-white focus:outline-none"
           value={scheduleProfile.title}
           onChange={(e) =>
             setScheduleProfile({ ...scheduleProfile, title: e.target.value })
@@ -41,7 +41,7 @@ const ProfileTab = ({
         <textarea
           placeholder="e.g. 30min video chat with me."
           id="description"
-          className="mb-4 w-full appearance-none rounded border-2 border-gray-100 bg-neutral-100 py-2 px-4 leading-tight text-black placeholder-neutral-400 shadow-sm focus:border-black focus:bg-white focus:outline-none "
+          className="mb-4 w-full appearance-none rounded border-2 border-gray-100 bg-neutral-100 py-2 px-4 leading-tight text-black placeholder-neutral-500 shadow-sm focus:border-black focus:bg-white focus:outline-none"
           maxLength={200}
           value={scheduleProfile.description}
           onChange={(e) =>
@@ -74,7 +74,7 @@ const ProfileTab = ({
                       ? "bg-black bg-opacity-90 text-white"
                       : "bg-neutral-100"
                   }
-                    relative flex cursor-pointer rounded-lg px-6 py-3 focus:outline-none`
+                    relative flex cursor-pointer rounded-lg px-6 py-3 shadow-sm focus:outline-none`
                 }
               >
                 {({ checked }) => (
@@ -90,12 +90,6 @@ const ProfileTab = ({
                           >
                             {slot} min
                           </RadioGroup.Label>
-                          <RadioGroup.Description
-                            as="span"
-                            className={`inline ${
-                              checked ? "text-sky-100" : "text-gray-500"
-                            }`}
-                          ></RadioGroup.Description>
                         </div>
                       </div>
                     </div>

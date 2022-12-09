@@ -10,6 +10,7 @@ import { Tab } from "@headlessui/react";
 import { FiArrowRight, FiPlus, FiX } from "react-icons/fi";
 import classNames from "classnames";
 import ProfileTab from "./ProfileTab";
+import AvailabilityTab from "./AvailabilityTab";
 
 const ModalTabs = ["Schedule Profile", "Availability", "Confirm"];
 
@@ -97,8 +98,8 @@ const DashModal = () => {
                   setScheduleProfile={setScheduleProfile}
                 />
               </Tab.Panel>
-              <Tab.Panel className="mt-5  min-h-[13rem] w-full bg-red-400">
-                Content 2
+              <Tab.Panel>
+                <AvailabilityTab />
               </Tab.Panel>
               <Tab.Panel className="mt-5  min-h-[13rem] w-full bg-red-400">
                 Content 3
