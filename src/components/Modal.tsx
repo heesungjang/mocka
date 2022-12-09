@@ -9,8 +9,6 @@ import {
   type SetStateAction,
 } from "react";
 
-import { FiX } from "react-icons/fi";
-
 type ModalContextType = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -94,10 +92,10 @@ const ModalContents = ({
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog as="div" className="relative z-10 " onClose={closeModal}>
           <BackDrop />
 
-          <div className="fixed inset-0 overflow-y-auto">
+          <div className="fixed inset-0 overflow-y-auto ">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
               <Transition.Child
                 as={Fragment}
@@ -109,7 +107,7 @@ const ModalContents = ({
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel
-                  className={`w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}
+                  className={`w-full max-w-2xl transform overflow-scroll rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}
                 >
                   <Dialog.Title
                     as="h3"

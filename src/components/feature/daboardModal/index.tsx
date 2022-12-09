@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
   Modal,
   ModalContents,
@@ -7,17 +7,34 @@ import {
 } from "../../Modal";
 
 import { Tab } from "@headlessui/react";
-import { FiArrowRight, FiPlus, FiArrowLeft, FiX } from "react-icons/fi";
+import { FiArrowRight, FiPlus, FiX } from "react-icons/fi";
 import classNames from "classnames";
+import ProfileTab from "./ProfileTab";
 
 const ModalTabs = ["Schedule Profile", "Availability", "Confirm"];
+
+export type ScheduleProfile = {
+  title: string;
+  description: string;
+  chatTime: number;
+};
 
 const DashModal = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const isLastIdex = selectedIndex === 2;
   const inFirstIndex = selectedIndex === 0;
   const isPrevButton = selectedIndex !== 0;
-  const onNext = () => !isLastIdex && setSelectedIndex((prev) => prev + 1);
+
+  const [scheduleProfile, setScheduleProfile] = useState<ScheduleProfile>({
+    title: "",
+    description: "",
+    chatTime: 15,
+  });
+
+  const onNext = () => {
+    !isLastIdex && setSelectedIndex((prev) => prev + 1);
+    console.log(scheduleProfile);
+  };
   const onPrev = () => !inFirstIndex && setSelectedIndex((prev) => prev - 1);
 
   return (
@@ -47,7 +64,7 @@ const DashModal = () => {
             </button>
           </ModalDismissButton>
         </div>
-        <div className="mt-6 w-full max-w-sm  px-2 sm:px-0">
+        <div className="mt-6 w-full  px-2 sm:px-0">
           <Tab.Group
             vertical
             manual
@@ -55,7 +72,7 @@ const DashModal = () => {
             selectedIndex={selectedIndex}
             onChange={setSelectedIndex}
           >
-            <Tab.List className="flex space-x-2 rounded-lg bg-black/90 p-1">
+            <Tab.List className="flex max-w-sm space-x-2 rounded-lg bg-black/90 p-1 ">
               {ModalTabs.map((tab) => (
                 <Tab
                   key={tab}
@@ -74,9 +91,18 @@ const DashModal = () => {
               ))}
             </Tab.List>
             <Tab.Panels>
-              <Tab.Panel>Content 1</Tab.Panel>
-              <Tab.Panel>Content 2</Tab.Panel>
-              <Tab.Panel>Content 3</Tab.Panel>
+              <Tab.Panel>
+                <ProfileTab
+                  scheduleProfile={scheduleProfile}
+                  setScheduleProfile={setScheduleProfile}
+                />
+              </Tab.Panel>
+              <Tab.Panel className="mt-5  min-h-[13rem] w-full bg-red-400">
+                Content 2
+              </Tab.Panel>
+              <Tab.Panel className="mt-5  min-h-[13rem] w-full bg-red-400">
+                Content 3
+              </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
         </div>
