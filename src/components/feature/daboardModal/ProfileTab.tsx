@@ -39,6 +39,7 @@ const ProfileTab = ({
           Description
         </label>
         <textarea
+          rows={6}
           placeholder="e.g. 30min video chat with me."
           id="description"
           className="mb-4 w-full appearance-none rounded border-2 border-gray-100 bg-neutral-100 py-2 px-4 leading-tight text-black placeholder-neutral-500 shadow-sm focus:border-black focus:bg-white focus:outline-none"
