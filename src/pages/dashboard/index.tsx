@@ -1,13 +1,12 @@
 import {
-  type NextPage,
   type GetServerSideProps,
   type InferGetServerSidePropsType,
 } from "next";
 
-import { type Session } from "next-auth";
+import { getSession } from "next-auth/react";
 import { FiMoreHorizontal } from "react-icons/fi";
-import DashBoardModal from "../components/feature/daboardModal";
-import { requireAuthentication } from "../utils/auth";
+import DashBoardModal from "../../components/feature/daboardModal";
+import SideBarLayout from "../../components/layouts/SideTabLayout";
 
 const EmptyMsg = (
   <>
@@ -18,9 +17,7 @@ const EmptyMsg = (
   </>
 );
 
-const DashBoard: NextPage = ({
-  authenticatedUser,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+function DashBoard({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
       <div className="relative  flex items-center justify-between">
@@ -38,17 +35,24 @@ const DashBoard: NextPage = ({
       </div>
     </>
   );
+}
+
+DashBoard.Layout = SideBarLayout;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/signin",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 };
 
 export default DashBoard;
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  return requireAuthentication(context, ({ session }: { session: Session }) => {
-    const { user: authenticatedUser } = session;
-    return {
-      props: {
-        session: authenticatedUser,
-      },
-    };
-  });
-};

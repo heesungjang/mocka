@@ -17,11 +17,16 @@ const DATES = [
 
 const AvailabilityTab = () => {
   return (
-    <div className="mt-5  mb-10 flex min-h-[13rem] w-full flex-col gap-5">
-      <TimeZonePicker />
-      {DATES.map((date) => {
-        return <Date key={date} date={date} />;
-      })}
+    <div className="mt-3  mb-10 w-full flex-col gap-5">
+      <span className="mb-2 inline-block text-sm font-normal text-neutral-500">
+        Timezone
+      </span>
+      <div className="flex w-full flex-col  gap-4 ">
+        <TimeZonePicker />
+        {DATES.map((date) => {
+          return <Date key={date} date={date} />;
+        })}
+      </div>
     </div>
   );
 };
@@ -64,7 +69,7 @@ const TimePicker = () => {
   const [endTime, setEndTime] = useState(TIME_POINTS[0]);
 
   return (
-    <div className="ml-6 flex items-center gap-5">
+    <div className="ml-10 flex items-center gap-5">
       <div className="w-32">
         <Listbox value={startTime} onChange={setStartTime}>
           <div className="relative mt-1">
@@ -196,16 +201,20 @@ const TimeZonePicker = () => {
       styles={{
         control: (baseStyles, state) => ({
           ...baseStyles,
-          borderColor: "rgb(0 0 0)",
+          width: "46%",
+          marginBottom: "10px",
+          borderColor: "rgb(212 212 212)",
           "&:hover": {
-            borderColor: "rgb(0 0 0)",
+            borderColor: "rgb(212 212 212)",
           },
+
           boxShadow: state.isFocused ? "rgb(0 0 0)" : "none",
           fontSize: "14px",
           svg: {
             color: "black",
           },
         }),
+        menu: (styles) => ({ ...styles, width: "46%" }),
         option: (styles, { isDisabled, isSelected }) => {
           return {
             ...styles,

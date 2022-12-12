@@ -58,7 +58,7 @@ const DashModal = () => {
           <ModalDismissButton>
             <button
               type="button"
-              className="absolute top-5 right-9 inline-flex justify-center rounded-md border border-transparent bg-neutral-100 px-2 py-1 text-sm font-medium text-black hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="absolute top-5 right-7 inline-flex justify-center rounded-md border border-transparent bg-neutral-100 px-2 py-1 text-sm font-medium text-black hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
               onClick={() => setSelectedIndex(0)}
             >
               <FiX size={18} />
