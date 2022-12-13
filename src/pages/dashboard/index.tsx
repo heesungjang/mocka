@@ -1,21 +1,8 @@
-import {
-  type GetServerSideProps,
-  type InferGetServerSidePropsType,
-} from "next";
-
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/react";
 import { FiMoreHorizontal } from "react-icons/fi";
-import DashBoardModal from "../../components/feature/daboardModal";
+import DashBoardModal from "../../components/feature/dashboard/modal";
 import SideBarLayout from "../../components/layouts/SideTabLayout";
-
-const EmptyMsg = (
-  <>
-    <FiMoreHorizontal className="mb-5" size={35} opacity={0.5} />
-    <span className="text-md font-light text-neutral-400">
-      Looks like you don&apos;t have mocka schedule yet.
-    </span>
-  </>
-);
 
 function DashBoard({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
@@ -31,13 +18,22 @@ function DashBoard({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
       </div>
 
       <div className="border-1 mt-8 flex h-96 w-full flex-col items-center justify-center rounded-lg border border-solid md:mt-12">
-        {EmptyMsg}
+        <EmptyMsg />
       </div>
     </>
   );
 }
 
 DashBoard.Layout = SideBarLayout;
+
+const EmptyMsg = () => (
+  <>
+    <FiMoreHorizontal className="mb-5" size={35} opacity={0.5} />
+    <span className="text-md font-light text-neutral-400">
+      Looks like you don&apos;t have mocka schedule yet.
+    </span>
+  </>
+);
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);

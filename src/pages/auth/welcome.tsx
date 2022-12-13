@@ -3,7 +3,7 @@ import {
   type InferGetServerSidePropsType,
   type GetServerSideProps,
 } from "next";
-import AuthButton from "../../components/AuthButton";
+import AuthButton from "../../components/feature/auth/AuthButton";
 import { getSession } from "next-auth/react";
 
 export default function Welcome({}: InferGetServerSidePropsType<

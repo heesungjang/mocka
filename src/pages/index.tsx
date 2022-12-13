@@ -1,4 +1,4 @@
-import { NextPageContext } from "next";
+import type { NextPageContext } from "next";
 import { getSession } from "next-auth/react";
 
 function RedirectPage() {

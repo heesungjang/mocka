@@ -4,8 +4,8 @@ import { Inter } from "@next/font/google";
 import { SessionProvider } from "next-auth/react";
 
 import type { AppProps } from "next/app";
-import { type NextPage } from "next";
-import { type ScriptProps } from "next/script";
+import type { NextPage } from "next";
+import type { ScriptProps } from "next/script";
 
 type Page<P = Record<string, never>> = NextPage<P> & {
   Layout: (page: ScriptProps) => JSX.Element;

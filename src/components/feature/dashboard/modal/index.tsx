@@ -1,16 +1,20 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Modal,
   ModalContents,
   ModalOpenButton,
   ModalDismissButton,
-} from "../../Modal";
+} from "../../../generics/Modal";
 
-import { Tab } from "@headlessui/react";
-import { FiArrowRight, FiPlus, FiX } from "react-icons/fi";
-import classNames from "classnames";
 import ProfileTab from "./ProfileTab";
+import classNames from "classnames";
+import { Tab } from "@headlessui/react";
 import AvailabilityTab from "./AvailabilityTab";
+import useTabIndex from "../../../../hooks/useTabIndex";
+import { FiArrowRight, FiPlus, FiX } from "react-icons/fi";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const ModalTabs = ["Schedule Profile", "Availability", "Confirm"];
 
@@ -20,23 +24,63 @@ export type ScheduleProfile = {
   chatTime: number;
 };
 
-const DashModal = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const isLastIdex = selectedIndex === 2;
-  const inFirstIndex = selectedIndex === 0;
-  const isPrevButton = selectedIndex !== 0;
+export const ScheduleProfileSchema = z.object({
+  title: z.string().max(50).min(1).nullish(),
+  description: z.string().max(100).min(1).nullish(),
+  chatTime: z.number().nullish(),
+});
 
-  const [scheduleProfile, setScheduleProfile] = useState<ScheduleProfile>({
-    title: "",
-    description: "",
-    chatTime: 15,
+const DashModal = () => {
+  const {
+    onNext,
+    onPrev,
+    currentIndex,
+    resetTabIndex,
+    setCurrentIndex,
+    isPrev,
+    isLastIndex,
+  } = useTabIndex();
+
+  const {
+    register: registerProfile,
+    handleSubmit: handleProfileSubmit,
+    reset: resetProfile,
+    formState: { errors: profileErrors },
+    control: controlProfile,
+    watch,
+    trigger,
+    setFocus,
+  } = useForm({
+    defaultValues: {
+      title: "",
+      description: "",
+      chatTime: 15,
+    },
+    resolver: zodResolver(ScheduleProfileSchema),
   });
 
-  const onNext = () => {
-    !isLastIdex && setSelectedIndex((prev) => prev + 1);
-    console.log(scheduleProfile);
+  const handleTabChange = async () => {
+    if (currentIndex === 0) {
+      const validated = await trigger();
+      if (validated) {
+        onNext();
+      }
+    }
   };
-  const onPrev = () => !inFirstIndex && setSelectedIndex((prev) => prev - 1);
+
+  // Profile Tab invalidated input focus
+  useEffect(() => {
+    const firstError = (
+      Object.keys(profileErrors) as Array<keyof typeof profileErrors>
+    ).reduce<keyof typeof profileErrors | null>((field, a) => {
+      const fieldKey = field as keyof typeof profileErrors;
+      return !!profileErrors[fieldKey] ? fieldKey : a;
+    }, null);
+
+    if (firstError) {
+      setFocus(firstError);
+    }
+  }, [setFocus, profileErrors]);
 
   return (
     <Modal>
@@ -46,20 +90,19 @@ const DashModal = () => {
           <FiPlus className="ml-5" strokeWidth={3} />
         </button>
       </ModalOpenButton>
-      <ModalContents
-        title="Create new schedule"
-        onClose={() => setSelectedIndex(0)}
-      >
+      <ModalContents title="Create new schedule" onClose={resetTabIndex}>
         <div className="mt-2 flex justify-between">
           <p className="text-sm text-neutral-400">
             Setup your availability and price to create new mocka schedule.
           </p>
-
           <ModalDismissButton>
             <button
               type="button"
               className="absolute top-5 right-7 inline-flex justify-center rounded-md border border-transparent bg-neutral-100 px-2 py-1 text-sm font-medium text-black hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
-              onClick={() => setSelectedIndex(0)}
+              onClick={() => {
+                resetProfile();
+                resetTabIndex();
+              }}
             >
               <FiX size={18} />
             </button>
@@ -70,8 +113,8 @@ const DashModal = () => {
             vertical
             manual
             defaultIndex={0}
-            selectedIndex={selectedIndex}
-            onChange={setSelectedIndex}
+            selectedIndex={currentIndex}
+            onChange={setCurrentIndex}
           >
             <Tab.List className="flex max-w-sm space-x-2 rounded-lg bg-black/90 p-1 ">
               {ModalTabs.map((tab) => (
@@ -94,8 +137,9 @@ const DashModal = () => {
             <Tab.Panels>
               <Tab.Panel>
                 <ProfileTab
-                  scheduleProfile={scheduleProfile}
-                  setScheduleProfile={setScheduleProfile}
+                  profileErrors={profileErrors}
+                  registerProfile={registerProfile}
+                  controlProfile={controlProfile}
                 />
               </Tab.Panel>
               <Tab.Panel>
@@ -109,7 +153,7 @@ const DashModal = () => {
         </div>
 
         <div className="mt-4 flex w-full  justify-end">
-          {isPrevButton && (
+          {isPrev && (
             <button
               type="button"
               className="mr-3 inline-flex  w-24 items-center justify-center rounded-md   border border-transparent bg-neutral-100 px-4 py-2 text-sm font-medium text-black hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
@@ -121,9 +165,9 @@ const DashModal = () => {
           <button
             type="button"
             className="mr-3 inline-flex w-24 items-center justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            onClick={onNext}
+            onClick={handleTabChange}
           >
-            {isLastIdex ? "Create" : "Next"}
+            {isLastIndex ? "Create" : "Next"}
             <FiArrowRight className="ml-2" />
           </button>
         </div>

@@ -3,7 +3,7 @@ import { Switch, Transition } from "@headlessui/react";
 import { Listbox } from "@headlessui/react";
 import { FiChevronDown, FiCheck } from "react-icons/fi";
 import TimezoneSelect, { type ITimezoneOption } from "react-timezone-select";
-import { TIME_POINTS } from "../../../constants/clitent";
+import { TIME_POINTS } from "../../../../constants/clitent";
 
 const DATES = [
   "Sunday",

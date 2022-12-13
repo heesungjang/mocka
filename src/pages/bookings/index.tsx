@@ -1,8 +1,4 @@
-import {
-  type InferGetServerSidePropsType,
-  type GetServerSideProps,
-  type NextPage,
-} from "next";
+import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 
 import { getSession } from "next-auth/react";
 import SideBarLayout from "../../components/layouts/SideTabLayout";
