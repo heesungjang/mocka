@@ -3,7 +3,7 @@ import { Switch, Transition } from "@headlessui/react";
 import { Listbox } from "@headlessui/react";
 import { FiChevronDown, FiCheck } from "react-icons/fi";
 import TimezoneSelect, { type ITimezoneOption } from "react-timezone-select";
-import { TIME_POINTS } from "../../../../constants/clitent";
+// import { TIME_POINTS } from "../../../../constants/clitent";
 import type {
   Control,
   FieldErrorsImpl,
@@ -32,6 +32,7 @@ const AvailabilityTab = ({
   resetAvailability,
   setAvailability,
   getAvailability,
+  TIME_POINTS,
 }: {
   AvailabilityErrors: Partial<FieldErrorsImpl<AvailabilityFormValues>>;
   controlAvailability: Control<AvailabilityFormValues, any>;
@@ -39,6 +40,7 @@ const AvailabilityTab = ({
   resetAvailability: UseFormReset<AvailabilityFormValues>;
   setAvailability: UseFormSetValue<AvailabilityFormValues>;
   getAvailability: UseFormGetValues<AvailabilityFormValues>;
+  TIME_POINTS: string[];
 }) => {
   return (
     <div className="mt-3  mb-10 w-full flex-col gap-5">
@@ -56,6 +58,7 @@ const AvailabilityTab = ({
               resetAvailability={resetAvailability}
               setAvailability={setAvailability}
               getAvailability={getAvailability}
+              TIME_POINTS={TIME_POINTS}
             />
           );
         })}
@@ -70,12 +73,14 @@ const Date = ({
   resetAvailability,
   setAvailability,
   getAvailability,
+  TIME_POINTS,
 }: {
   date: string;
   getAvailability: UseFormGetValues<AvailabilityFormValues>;
   resetAvailability: UseFormReset<AvailabilityFormValues>;
   controlAvailability: Control<AvailabilityFormValues, any>;
   setAvailability: UseFormSetValue<AvailabilityFormValues>;
+  TIME_POINTS: string[];
 }) => {
   const [enabled, setEnabled] = useState(false);
 
@@ -106,6 +111,7 @@ const Date = ({
       </div>
       {enabled && (
         <TimePicker
+          TIME_POINTS={TIME_POINTS}
           getAvailability={getAvailability}
           controlAvailability={controlAvailability}
           date={date}
@@ -123,8 +129,10 @@ const TimePicker = ({
   resetAvailability,
   setAvailability,
   getAvailability,
+  TIME_POINTS,
 }: {
   date: string;
+  TIME_POINTS: string[];
   resetAvailability: UseFormReset<AvailabilityFormValues>;
   controlAvailability: Control<AvailabilityFormValues, any>;
   setAvailability: UseFormSetValue<AvailabilityFormValues>;
@@ -138,7 +146,7 @@ const TimePicker = ({
 
     setAvailability("schedule", {
       ...prev,
-      [date]: { FROM: "09:00", TO: "10:00" },
+      [date]: { FROM: "9:00am", TO: "10:00am" },
     });
     setFirstRender(false);
 

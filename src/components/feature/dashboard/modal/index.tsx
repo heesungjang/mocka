@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   Modal,
   ModalContents,
@@ -15,6 +15,7 @@ import { FiArrowRight, FiPlus, FiX } from "react-icons/fi";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { generateTimeSlots } from "../../../../utils/generatetimeSlots";
 
 const ModalTabs = ["Schedule Profile", "Availability", "Confirm"];
 
@@ -71,6 +72,7 @@ const DashModal = () => {
     watch,
     trigger,
     setFocus,
+    getValues: getProfileValues,
   } = useForm({
     defaultValues: {
       title: "",
@@ -98,6 +100,10 @@ const DashModal = () => {
     },
     resolver: zodResolver(ScheduleAvailabilitySchema),
   });
+
+  const { chatTime } = getProfileValues();
+
+  const TIME_POINTS = useMemo(() => generateTimeSlots(chatTime), [chatTime]);
 
   const handleTabChange = async () => {
     if (currentIndex === 0) {
@@ -190,6 +196,7 @@ const DashModal = () => {
                   resetAvailability={resetAvailability}
                   setAvailability={setAvailability}
                   getAvailability={getAvailability}
+                  TIME_POINTS={TIME_POINTS}
                 />
               </Tab.Panel>
               <Tab.Panel className="mt-5  min-h-[13rem] w-full bg-red-400">
