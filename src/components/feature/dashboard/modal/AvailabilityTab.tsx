@@ -4,15 +4,15 @@ import { Listbox } from "@headlessui/react";
 import { FiChevronDown, FiCheck } from "react-icons/fi";
 import TimezoneSelect, { type ITimezoneOption } from "react-timezone-select";
 import { TIME_POINTS } from "../../../../constants/clitent";
-import {
+import type {
   Control,
-  Controller,
   FieldErrorsImpl,
   UseFormGetValues,
   UseFormRegister,
   UseFormReset,
   UseFormSetValue,
 } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import type { AvailabilityFormValues } from ".";
 
 const DATES = [
@@ -172,7 +172,7 @@ const TimePicker = ({
                   }}
                 >
                   <div className="relative mt-1">
-                    <Listbox.Button className="relative w-full cursor-default rounded-lg border border-neutral-300 bg-white py-2 pl-3  pr-10 text-left sm:text-sm">
+                    <Listbox.Button className="relative w-full cursor-pointer rounded-lg border border-neutral-300 bg-white py-2  pl-3 pr-10 text-left sm:text-sm">
                       <span className="block truncate">
                         {value[date]?.FROM}
                       </span>
@@ -195,33 +195,31 @@ const TimePicker = ({
                         ).map((point, personIdx) => (
                           <Listbox.Option
                             key={personIdx}
-                            className={({ active }) =>
-                              `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                active ? "bg-black text-white" : "text-gray-900"
-                              }`
-                            }
+                            className={`relative cursor-default select-none py-2 pl-10 pr-4 ${
+                              point === value[date]?.FROM
+                                ? "bg-black text-white"
+                                : "text-gray-900"
+                            }`}
                             value={point}
                           >
-                            {({ selected, active }) => (
-                              <>
-                                <span
-                                  className={`block truncate ${
-                                    selected ? "font-medium" : "font-normal"
-                                  }`}
-                                >
-                                  {point}
+                            <>
+                              <span
+                                className={`block truncate ${"font-normal"}`}
+                              >
+                                {point}
+                              </span>
+                              {point === value[date]?.FROM ? (
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                  <FiCheck
+                                    className={`${
+                                      point === value[date]?.FROM
+                                        ? "text-white"
+                                        : "text-black"
+                                    }`}
+                                  />
                                 </span>
-                                {selected ? (
-                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                    <FiCheck
-                                      className={`${
-                                        active ? "text-white" : "text-black"
-                                      }`}
-                                    />
-                                  </span>
-                                ) : null}
-                              </>
-                            )}
+                              ) : null}
+                            </>
                           </Listbox.Option>
                         ))}
                       </Listbox.Options>
@@ -242,7 +240,7 @@ const TimePicker = ({
                   }}
                 >
                   <div className="relative mt-1">
-                    <Listbox.Button className="relative w-full cursor-default rounded-lg border border-neutral-300 bg-white py-2 pl-3  pr-10 text-left sm:text-sm">
+                    <Listbox.Button className="relative w-full cursor-pointer  rounded-lg border border-neutral-300 bg-white py-2 pl-3  pr-10 text-left sm:text-sm">
                       <span className="block truncate"> {value[date]?.TO}</span>
                       <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                         <FiChevronDown />
@@ -262,35 +260,31 @@ const TimePicker = ({
                         ).map((point, personIdx) => (
                           <Listbox.Option
                             key={personIdx}
-                            className={({ active }) =>
-                              `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                active ? "bg-black text-white" : "text-gray-900"
-                              }`
-                            }
+                            className={`relative cursor-default select-none py-2 pl-10 pr-4 ${
+                              point === value[date]?.TO
+                                ? "bg-black text-white"
+                                : "text-gray-900"
+                            }`}
                             value={point}
                           >
-                            {({ selected, active }) => (
-                              <>
+                            <>
+                              <span className={`block truncate font-normal`}>
+                                {point}
+                              </span>
+                              {point === value[date]?.TO ? (
                                 <span
-                                  className={`block truncate ${
-                                    selected ? "font-medium" : "font-normal"
-                                  }`}
+                                  className={`absolute inset-y-0 left-0 flex items-center pl-3 text-black`}
                                 >
-                                  {point}
+                                  <FiCheck
+                                    className={`${
+                                      point === value[date]?.TO
+                                        ? "text-white"
+                                        : "text-black"
+                                    }`}
+                                  />
                                 </span>
-                                {selected ? (
-                                  <span
-                                    className={`absolute inset-y-0 left-0 flex items-center pl-3 text-black`}
-                                  >
-                                    <FiCheck
-                                      className={`${
-                                        active ? "text-white" : "text-black"
-                                      }`}
-                                    />
-                                  </span>
-                                ) : null}
-                              </>
-                            )}
+                              ) : null}
+                            </>
                           </Listbox.Option>
                         ))}
                       </Listbox.Options>
@@ -328,6 +322,7 @@ const TimeZonePicker = ({
                 "&:hover": {
                   borderColor: "rgb(212 212 212)",
                 },
+                cursor: "pointer",
 
                 boxShadow: state.isFocused ? "rgb(0 0 0)" : "none",
                 fontSize: "14px",

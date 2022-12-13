@@ -165,8 +165,8 @@ const DashModal = () => {
                       "w-full rounded-md py-1.5 text-sm font-medium leading-5 text-white",
                       "transition-all duration-100  focus:outline-none ",
                       selected
-                        ? "bg-white text-black shadow"
-                        : "hover:bg-white/[0.1] "
+                        ? "bg-white text-black/100 shadow"
+                        : "hover:bg-white/[0.1]"
                     )
                   }
                 >
