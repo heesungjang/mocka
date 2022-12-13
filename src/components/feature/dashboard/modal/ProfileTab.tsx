@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { RadioGroup } from "@headlessui/react";
-import { FiCheck } from "react-icons/fi";
-import { type ScheduleProfile } from "./index";
-import {
-  type Control,
-  Controller,
-  type UseFormRegister,
+import type { ScheduleProfile } from "./index";
+import type {
+  Control,
+  UseFormRegister,
   FieldErrorsImpl,
 } from "react-hook-form";
-const TIME_SLOT = [15, 30, 60];
+import { Controller } from "react-hook-form";
 
+const TIME_SLOT = [15, 30, 60];
 const ProfileTab = ({
   registerProfile,
   controlProfile,

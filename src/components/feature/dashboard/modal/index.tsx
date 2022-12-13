@@ -24,10 +24,31 @@ export type ScheduleProfile = {
   chatTime: number;
 };
 
+export type ScheduleAvailability = {
+  [key: string]: { FROM: string; TO: string };
+};
+
+export type AvailabilityFormValues = {
+  schedule: ScheduleAvailability;
+  timeZone: string;
+};
+
 export const ScheduleProfileSchema = z.object({
   title: z.string().max(50).min(1).nullish(),
   description: z.string().max(100).min(1).nullish(),
   chatTime: z.number().nullish(),
+});
+
+export const ScheduleAvailabilitySchema = z.object({
+  schedule: z.object({
+    day: z.array(
+      z.object({
+        FROM: z.string(),
+        TO: z.string(),
+      })
+    ),
+  }),
+  timeZone: z.string().nullish(),
 });
 
 const DashModal = () => {
@@ -57,6 +78,25 @@ const DashModal = () => {
       chatTime: 15,
     },
     resolver: zodResolver(ScheduleProfileSchema),
+  });
+
+  const {
+    register: registerAvailability,
+    handleSubmit: handleAvailabilitySubmit,
+    reset: resetAvailability,
+    formState: { errors: AvailabilityErrors },
+    control: controlAvailability,
+    watch: watchAvailability,
+    trigger: triggerAvailability,
+    setFocus: setFocusAvailability,
+    setValue: setAvailability,
+    getValues: getAvailability,
+  } = useForm({
+    defaultValues: {
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      schedule: {},
+    },
+    resolver: zodResolver(ScheduleAvailabilitySchema),
   });
 
   const handleTabChange = async () => {
@@ -143,7 +183,14 @@ const DashModal = () => {
                 />
               </Tab.Panel>
               <Tab.Panel>
-                <AvailabilityTab />
+                <AvailabilityTab
+                  registerAvailability={registerAvailability}
+                  AvailabilityErrors={AvailabilityErrors}
+                  controlAvailability={controlAvailability}
+                  resetAvailability={resetAvailability}
+                  setAvailability={setAvailability}
+                  getAvailability={getAvailability}
+                />
               </Tab.Panel>
               <Tab.Panel className="mt-5  min-h-[13rem] w-full bg-red-400">
                 Content 3
