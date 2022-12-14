@@ -1,12 +1,10 @@
-import { Fragment, useEffect, useState } from "react";
+import { Dispatch, Fragment, SetStateAction, useEffect, useState } from "react";
 import { Switch, Transition } from "@headlessui/react";
 import { Listbox } from "@headlessui/react";
 import { FiChevronDown, FiCheck } from "react-icons/fi";
-import TimezoneSelect, { type ITimezoneOption } from "react-timezone-select";
-// import { TIME_POINTS } from "../../../../constants/clitent";
+import TimezoneSelect from "react-timezone-select";
 import type {
   Control,
-  FieldErrorsImpl,
   UseFormClearErrors,
   UseFormGetValues,
   UseFormRegister,
@@ -35,6 +33,8 @@ const AvailabilityTab = ({
   getAvailability,
   TIME_POINTS,
   clearAvailabilityError,
+  enabled,
+  setEnabled,
 }: {
   clearAvailabilityError: UseFormClearErrors<AvailabilityFormValues>;
   AvailabilityError: string;
@@ -44,6 +44,12 @@ const AvailabilityTab = ({
   setAvailability: UseFormSetValue<AvailabilityFormValues>;
   getAvailability: UseFormGetValues<AvailabilityFormValues>;
   TIME_POINTS: string[];
+  enabled: { [key: string]: boolean };
+  setEnabled: Dispatch<
+    SetStateAction<{
+      [key: string]: boolean;
+    }>
+  >;
 }) => {
   return (
     <div className="mt-3  mb-10 w-full flex-col gap-5">
@@ -63,6 +69,8 @@ const AvailabilityTab = ({
               getAvailability={getAvailability}
               TIME_POINTS={TIME_POINTS}
               clearAvailabilityError={clearAvailabilityError}
+              enabled={enabled}
+              setEnabled={setEnabled}
             />
           );
         })}
@@ -84,6 +92,8 @@ const Date = ({
   getAvailability,
   TIME_POINTS,
   clearAvailabilityError,
+  enabled,
+  setEnabled,
 }: {
   date: string;
   clearAvailabilityError: UseFormClearErrors<AvailabilityFormValues>;
@@ -92,35 +102,46 @@ const Date = ({
   controlAvailability: Control<AvailabilityFormValues, any>;
   setAvailability: UseFormSetValue<AvailabilityFormValues>;
   TIME_POINTS: string[];
+  enabled: { [key: string]: boolean };
+  setEnabled: Dispatch<
+    SetStateAction<{
+      [key: string]: boolean;
+    }>
+  >;
 }) => {
-  const [enabled, setEnabled] = useState(false);
-
   return (
     <div className="flex h-8 items-center">
       <Switch
-        checked={enabled}
-        onChange={setEnabled}
+        checked={enabled[date]}
+        onChange={() => {
+          if (enabled[date]) {
+            const { [date]: _, ...rest } = getAvailability("schedule");
+            setAvailability("schedule", rest);
+          }
+
+          setEnabled({ ...enabled, [date]: !enabled[date] });
+        }}
         className={`${
-          enabled ? "bg-black" : "bg-gray-200"
+          enabled[date] ? "bg-black" : "bg-gray-200"
         } relative inline-flex h-5 w-9 items-center rounded-full`}
       >
         <span className="sr-only">Enable notifications</span>
         <span
           className={`${
-            enabled ? "translate-x-4" : "translate-x-1"
+            enabled[date] ? "translate-x-4" : "translate-x-1"
           } inline-block h-4 w-4 transform rounded-full bg-white transition duration-200`}
         />
       </Switch>
       <div className="ml-5 w-16">
         <span
           className={` text-sm capitalize ${
-            enabled ? "text-black" : "w-10 text-neutral-400"
+            enabled[date] ? "text-black" : "w-10 text-neutral-400"
           }`}
         >
           {date}
         </span>
       </div>
-      {enabled && (
+      {enabled[date] && (
         <TimePicker
           TIME_POINTS={TIME_POINTS}
           getAvailability={getAvailability}
@@ -153,7 +174,6 @@ const TimePicker = ({
   getAvailability: UseFormGetValues<AvailabilityFormValues>;
 }) => {
   const [firstRender, setFirstRender] = useState(true);
-  const [endTime, setEndTime] = useState(TIME_POINTS[0]);
 
   useEffect(() => {
     const prev = getAvailability("schedule");
@@ -165,10 +185,10 @@ const TimePicker = ({
     setFirstRender(false);
     clearAvailabilityError();
 
-    return () => {
-      const { [date]: _, ...rest } = getAvailability("schedule");
-      setAvailability("schedule", rest);
-    };
+    // return () => {
+    //   const { [date]: _, ...rest } = getAvailability("schedule");
+    //   setAvailability("schedule", rest);
+    // };
   }, []);
 
   if (firstRender) {

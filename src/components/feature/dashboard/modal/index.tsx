@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Modal,
   ModalContents,
@@ -16,6 +16,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { generateTimeSlots } from "../../../../utils/generatetimeSlots";
+import ConfirmTab from "./ConfirmTab";
 
 const ModalTabs = ["Schedule Profile", "Availability", "Confirm"];
 
@@ -100,12 +101,15 @@ const DashModal = () => {
     },
     resolver: zodResolver(ScheduleAvailabilitySchema),
   });
-  const EmptyAvailabilityError = AvailabilityErrors.schedule?.message;
 
   const { chatTime } = getProfileValues();
+  const EmptyAvailabilityError = AvailabilityErrors.schedule?.message;
   const TIME_POINTS = useMemo(() => generateTimeSlots(chatTime), [chatTime]);
-
-  const handleTabChange = async () => {
+  const resetOnClose = (...fns: any) => fns.forEach((fn: any) => fn && fn());
+  const handleTabChange = async (arg: any) => {
+    if (typeof arg === "number" && arg < currentIndex) {
+      return onPrev();
+    }
     if (currentIndex === 0) {
       const validated = await trigger();
       if (validated) {
@@ -125,6 +129,26 @@ const DashModal = () => {
       onNext();
     }
   };
+
+  const [enabled, setEnabled] = useState<{ [key: string]: boolean }>({
+    sunday: false,
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
+    saturday: false,
+  });
+  const resetDateEnabled = () =>
+    setEnabled({
+      sunday: false,
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+    });
 
   // Profile Tab invalidated input focus
   useEffect(() => {
@@ -148,7 +172,12 @@ const DashModal = () => {
           <FiPlus className="ml-5" strokeWidth={3} />
         </button>
       </ModalOpenButton>
-      <ModalContents title="Create new schedule" onClose={resetTabIndex}>
+      <ModalContents
+        title="Create new schedule"
+        onClose={() =>
+          resetOnClose(resetProfile, resetAvailability, resetTabIndex, resetDateEnabled)
+        }
+      >
         <div className="mt-2 flex justify-between">
           <p className="text-sm text-neutral-400">
             Setup your availability and price to create new mocka schedule.
@@ -157,11 +186,9 @@ const DashModal = () => {
             <button
               type="button"
               className="absolute top-5 right-7 inline-flex justify-center rounded-md border border-transparent bg-neutral-100 px-2 py-1 text-sm font-medium text-black hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
-              onClick={() => {
-                resetProfile();
-                resetAvailability();
-                resetTabIndex();
-              }}
+              onClick={() =>
+                resetOnClose(resetProfile, resetAvailability, resetTabIndex, resetDateEnabled)
+              }
             >
               <FiX size={18} />
             </button>
@@ -173,7 +200,7 @@ const DashModal = () => {
             manual
             defaultIndex={0}
             selectedIndex={currentIndex}
-            onChange={setCurrentIndex}
+            onChange={handleTabChange}
           >
             <Tab.List className="flex max-w-sm space-x-2 rounded-lg bg-black/90 p-1 ">
               {ModalTabs.map((tab) => (
@@ -211,10 +238,15 @@ const DashModal = () => {
                   getAvailability={getAvailability}
                   TIME_POINTS={TIME_POINTS}
                   clearAvailabilityError={clearAvailabilityError}
+                  enabled={enabled}
+                  setEnabled={setEnabled}
                 />
               </Tab.Panel>
-              <Tab.Panel className="mt-5  min-h-[13rem] w-full bg-red-400">
-                Content 3
+              <Tab.Panel>
+                <ConfirmTab
+                  getProfileValues={getProfileValues}
+                  getAvailability={getAvailability}
+                />
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
