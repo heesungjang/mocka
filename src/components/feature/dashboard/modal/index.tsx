@@ -36,9 +36,9 @@ export type AvailabilityFormValues = {
 };
 
 export const ScheduleProfileSchema = z.object({
-  title: z.string().max(50).min(1).nullish(),
-  description: z.string().max(100).min(1).nullish(),
-  chatTime: z.number().nullish(),
+  title: z.string().max(50).min(1),
+  description: z.string().max(100).min(1),
+  chatTime: z.number(),
 });
 
 export const ScheduleAvailabilitySchema = z.object({
@@ -48,7 +48,7 @@ export const ScheduleAvailabilitySchema = z.object({
       TO: z.string(),
     }),
   }),
-  timeZone: z.string().nullish(),
+  timeZone: z.string(),
 });
 
 const DashModal = () => {
@@ -175,7 +175,12 @@ const DashModal = () => {
       <ModalContents
         title="Create new schedule"
         onClose={() =>
-          resetOnClose(resetProfile, resetAvailability, resetTabIndex, resetDateEnabled)
+          resetOnClose(
+            resetProfile,
+            resetAvailability,
+            resetTabIndex,
+            resetDateEnabled
+          )
         }
       >
         <div className="mt-2 flex justify-between">
@@ -187,7 +192,12 @@ const DashModal = () => {
               type="button"
               className="absolute top-5 right-7 inline-flex justify-center rounded-md border border-transparent bg-neutral-100 px-2 py-1 text-sm font-medium text-black hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
               onClick={() =>
-                resetOnClose(resetProfile, resetAvailability, resetTabIndex, resetDateEnabled)
+                resetOnClose(
+                  resetProfile,
+                  resetAvailability,
+                  resetTabIndex,
+                  resetDateEnabled
+                )
               }
             >
               <FiX size={18} />

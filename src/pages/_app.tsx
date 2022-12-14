@@ -15,13 +15,13 @@ type Props = AppProps & {
   Component: Page;
 };
 
-const Noop = ({ children }: ScriptProps) => <>{children}</>;
+const withOutLayout = ({ children }: ScriptProps) => <>{children}</>;
 
 const inter = Inter({
   subsets: ["latin"],
 });
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }: Props) => {
-  const Layout = Component.Layout || Noop;
+  const Layout = Component.Layout || withOutLayout;
 
   return (
     <SessionProvider session={session}>

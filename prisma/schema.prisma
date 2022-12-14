@@ -48,13 +48,14 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Schedule      Schedule[]
 }
 
 model VerificationToken {
@@ -63,4 +64,23 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Schedule {
+  id           String         @id @default(cuid())
+  title        String
+  description  String
+  chatTime     Int
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Availability Availability[]
+}
+
+model Availability {
+  id         String   @id @default(cuid())
+  scheduleId String
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  date       String
+  From       String
+  To         String
 }
