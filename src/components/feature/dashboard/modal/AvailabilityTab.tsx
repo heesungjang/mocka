@@ -7,6 +7,7 @@ import TimezoneSelect, { type ITimezoneOption } from "react-timezone-select";
 import type {
   Control,
   FieldErrorsImpl,
+  UseFormClearErrors,
   UseFormGetValues,
   UseFormRegister,
   UseFormReset,
@@ -27,14 +28,16 @@ const DATES = [
 
 const AvailabilityTab = ({
   registerAvailability,
-  AvailabilityErrors,
+  AvailabilityError,
   controlAvailability,
   resetAvailability,
   setAvailability,
   getAvailability,
   TIME_POINTS,
+  clearAvailabilityError,
 }: {
-  AvailabilityErrors: Partial<FieldErrorsImpl<AvailabilityFormValues>>;
+  clearAvailabilityError: UseFormClearErrors<AvailabilityFormValues>;
+  AvailabilityError: string;
   controlAvailability: Control<AvailabilityFormValues, any>;
   registerAvailability: UseFormRegister<AvailabilityFormValues>;
   resetAvailability: UseFormReset<AvailabilityFormValues>;
@@ -59,10 +62,16 @@ const AvailabilityTab = ({
               setAvailability={setAvailability}
               getAvailability={getAvailability}
               TIME_POINTS={TIME_POINTS}
+              clearAvailabilityError={clearAvailabilityError}
             />
           );
         })}
       </div>
+      {AvailabilityError && (
+        <span className="mt-5 inline-flex text-sm text-red-500">
+          {AvailabilityError}
+        </span>
+      )}
     </div>
   );
 };
@@ -74,8 +83,10 @@ const Date = ({
   setAvailability,
   getAvailability,
   TIME_POINTS,
+  clearAvailabilityError,
 }: {
   date: string;
+  clearAvailabilityError: UseFormClearErrors<AvailabilityFormValues>;
   getAvailability: UseFormGetValues<AvailabilityFormValues>;
   resetAvailability: UseFormReset<AvailabilityFormValues>;
   controlAvailability: Control<AvailabilityFormValues, any>;
@@ -117,6 +128,7 @@ const Date = ({
           date={date}
           resetAvailability={resetAvailability}
           setAvailability={setAvailability}
+          clearAvailabilityError={clearAvailabilityError}
         />
       )}
     </div>
@@ -130,9 +142,11 @@ const TimePicker = ({
   setAvailability,
   getAvailability,
   TIME_POINTS,
+  clearAvailabilityError,
 }: {
   date: string;
   TIME_POINTS: string[];
+  clearAvailabilityError: UseFormClearErrors<AvailabilityFormValues>;
   resetAvailability: UseFormReset<AvailabilityFormValues>;
   controlAvailability: Control<AvailabilityFormValues, any>;
   setAvailability: UseFormSetValue<AvailabilityFormValues>;
@@ -149,6 +163,7 @@ const TimePicker = ({
       [date]: { FROM: "9:00am", TO: "10:00am" },
     });
     setFirstRender(false);
+    clearAvailabilityError();
 
     return () => {
       const { [date]: _, ...rest } = getAvailability("schedule");

@@ -42,12 +42,10 @@ export const ScheduleProfileSchema = z.object({
 
 export const ScheduleAvailabilitySchema = z.object({
   schedule: z.object({
-    day: z.array(
-      z.object({
-        FROM: z.string(),
-        TO: z.string(),
-      })
-    ),
+    day: z.object({
+      FROM: z.string(),
+      TO: z.string(),
+    }),
   }),
   timeZone: z.string().nullish(),
 });
@@ -93,6 +91,8 @@ const DashModal = () => {
     setFocus: setFocusAvailability,
     setValue: setAvailability,
     getValues: getAvailability,
+    setError: setAvailabilityError,
+    clearErrors: clearAvailabilityError,
   } = useForm({
     defaultValues: {
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -100,9 +100,9 @@ const DashModal = () => {
     },
     resolver: zodResolver(ScheduleAvailabilitySchema),
   });
+  const EmptyAvailabilityError = AvailabilityErrors.schedule?.message;
 
   const { chatTime } = getProfileValues();
-
   const TIME_POINTS = useMemo(() => generateTimeSlots(chatTime), [chatTime]);
 
   const handleTabChange = async () => {
@@ -111,6 +111,18 @@ const DashModal = () => {
       if (validated) {
         onNext();
       }
+    }
+    if (currentIndex === 1) {
+      const values = watchAvailability();
+      const isEmpty = Object.keys(values.schedule).length === 0;
+
+      if (isEmpty) {
+        return setAvailabilityError("schedule", {
+          type: "custom",
+          message: "Minimum of one time slot has to be selected.",
+        });
+      }
+      onNext();
     }
   };
 
@@ -147,6 +159,7 @@ const DashModal = () => {
               className="absolute top-5 right-7 inline-flex justify-center rounded-md border border-transparent bg-neutral-100 px-2 py-1 text-sm font-medium text-black hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
               onClick={() => {
                 resetProfile();
+                resetAvailability();
                 resetTabIndex();
               }}
             >
@@ -191,12 +204,13 @@ const DashModal = () => {
               <Tab.Panel>
                 <AvailabilityTab
                   registerAvailability={registerAvailability}
-                  AvailabilityErrors={AvailabilityErrors}
+                  AvailabilityError={EmptyAvailabilityError ?? ""}
                   controlAvailability={controlAvailability}
                   resetAvailability={resetAvailability}
                   setAvailability={setAvailability}
                   getAvailability={getAvailability}
                   TIME_POINTS={TIME_POINTS}
+                  clearAvailabilityError={clearAvailabilityError}
                 />
               </Tab.Panel>
               <Tab.Panel className="mt-5  min-h-[13rem] w-full bg-red-400">
