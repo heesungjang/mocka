@@ -10,36 +10,39 @@ interface ISignIn {
 const SignIn: NextPage<ISignIn> = ({ providers }) => {
   const [email, setEmail] = useState("");
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-[#F3F3F3]">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-brand_bg">
       <div className="flex flex-col items-start">
-        <h1 className="mb-5 text-center text-6xl font-extrabold tracking-tight text-black">
+        <h1 className="mb-5 text-center text-6xl font-extrabold tracking-tight text-yellow-50 ">
           Happening Now,
         </h1>
-        <span className="text-center text-3xl font-extrabold tracking-tight text-black">
+        <span className="text-center text-3xl font-extrabold tracking-tight text-yellow-50">
           Join{" "}
-          <span className="bg-black px-2 leading-snug text-white">Mocka</span>{" "}
+          <span className="decoration-brand_color text-yellow-50 underline decoration-2 underline-offset-8">
+            Mocka
+          </span>{" "}
           Today
         </span>
       </div>
 
       <div className="mt-6 flex w-80 flex-col">
         <input
-          className="mt-10 h-12 w-full rounded-md px-5"
+          className="mt-10 h-12 w-full rounded-md px-5 focus:border-black focus:bg-white focus:outline-black"
           placeholder="your@email.com"
+          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <button
-          className="mt-5 inline-flex items-center justify-center rounded-md bg-black px-10 py-3 font-normal text-white no-underline transition hover:bg-black/80"
+          className="bg-brand_color mt-5 inline-flex items-center justify-center rounded-md px-10 py-3  font-semibold  capitalize text-black/80 no-underline transition hover:bg-yellow-200"
           onClick={() => signIn("email", { email, callbackUrl: "/dashboard" })}
         >
-          Continue with Email
+          Email a login link
         </button>
 
         <div className="relative flex items-center py-5">
-          <div className="flex-grow border-t border-gray-400"></div>
-          <span className="mx-4 flex-shrink text-gray-400">or</span>
-          <div className="flex-grow border-t border-gray-400"></div>
+          <div className="flex-grow border-t border-yellow-50"></div>
+          <span className="mx-4 flex-shrink text-yellow-50">or</span>
+          <div className="flex-grow border-t border-yellow-50"></div>
         </div>
 
         <div className="">
@@ -48,7 +51,7 @@ const SignIn: NextPage<ISignIn> = ({ providers }) => {
               provider.name !== "Email" && (
                 <div key={provider.name}>
                   <button
-                    className="inline-flex w-full items-center justify-center rounded-md border border-solid  border-neutral-300 px-10 py-3 font-normal text-black no-underline transition hover:bg-neutral-200/[0.95]"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-white px-10 py-3 font-semibold capitalize text-black/80 no-underline transition"
                     onClick={() =>
                       signIn(provider.id, { callbackUrl: "/dashboard" })
                     }

@@ -5,6 +5,7 @@ import {
 } from "next";
 import AuthButton from "../../components/feature/auth/AuthButton";
 import { getSession } from "next-auth/react";
+import Image from "next/image";
 
 export default function Welcome({}: InferGetServerSidePropsType<
   typeof getServerSideProps
@@ -17,14 +18,14 @@ export default function Welcome({}: InferGetServerSidePropsType<
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex min-h-screen flex-col items-center justify-center bg-[#F3F3F3]">
+      <main className="flex min-h-screen flex-col items-center justify-center bg-brand_bg antialiased">
         <div className="container relative flex max-w-lg flex-col items-center justify-center gap-12 px-4 py-16 md:max-w-3xl">
-          <span className=" absolute left-12 top-10 text-2xl md:left-10 md:top-5 md:text-5xl">
-            👋
+          <span className=" absolute left-10 text-2xl md:left-10 md:top-5 md:text-5xl">
+            {/* <Image src="/assets/logo.png" width={50} height={50} alt="" /> */}
           </span>
-          <h1 className="text-center text-5xl font-extrabold leading-snug tracking-tight text-black md:text-[5rem]">
-            Spend Valuable Minutes In
-            <span className=" text-border-black text-shadow-black ml-3 bg-black px-6 text-white ">
+          <h1 className="text-center text-5xl font-extrabold leading-snug tracking-tight text-yellow-50 md:text-[5rem]">
+            Spend Valuable Minutes In{" "}
+            <span className="decoration-brand_color underline decoration-2 underline-offset-8">
               Mocka
             </span>
           </h1>

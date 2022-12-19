@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .brand_input {
+    @apply w-full appearance-none rounded border-2 border-neutral-700 bg-neutral-700 py-2 px-4 leading-tight text-yellow-50 placeholder-neutral-400 shadow-sm transition-all duration-200 focus:border-brand_color focus:bg-brand_bg focus:outline-none;
+  }
+}

@@ -53,6 +53,7 @@ model User {
   email         String?    @unique
   emailVerified DateTime?
   image         String?
+  bio           String?
   accounts      Account[]
   sessions      Session[]
   Schedule      Schedule[]
@@ -72,15 +73,16 @@ model Schedule {
   description  String
   chatTime     Int
   userId       String
+  timeZone     String
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   Availability Availability[]
 }
 
 model Availability {
-  id         String   @id @default(cuid())
-  scheduleId String
-  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-  date       String
-  From       String
-  To         String
+  id           String   @id @default(cuid())
+  scheduleId   String
+  availability Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  date         String
+  from         String
+  to           String
 }

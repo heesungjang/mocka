@@ -17,8 +17,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { generateTimeSlots } from "../../../../utils/generatetimeSlots";
 import ConfirmTab from "./ConfirmTab";
+import { trpc } from "../../../../utils/trpc";
 
-const ModalTabs = ["Schedule Profile", "Availability", "Confirm"];
+const ModalTabs = ["Profile", "Availability", "Confirm"];
 
 export type ScheduleProfile = {
   title: string;
@@ -27,11 +28,11 @@ export type ScheduleProfile = {
 };
 
 export type ScheduleAvailability = {
-  [key: string]: { FROM: string; TO: string };
+  [key: string]: { from: string; to: string };
 };
 
 export type AvailabilityFormValues = {
-  schedule: ScheduleAvailability;
+  availability: ScheduleAvailability;
   timeZone: string;
 };
 
@@ -42,33 +43,28 @@ export const ScheduleProfileSchema = z.object({
 });
 
 export const ScheduleAvailabilitySchema = z.object({
-  schedule: z.object({
-    day: z.object({
-      FROM: z.string(),
-      TO: z.string(),
-    }),
-  }),
+  availability: z.record(
+    z.object({
+      from: z.string(),
+      to: z.string(),
+    })
+  ),
   timeZone: z.string(),
 });
 
-const DashModal = () => {
-  const {
-    onNext,
-    onPrev,
-    currentIndex,
-    resetTabIndex,
-    setCurrentIndex,
-    isPrev,
-    isLastIndex,
-  } = useTabIndex();
+const DashModal = ({
+  revalidateSchedule,
+}: {
+  revalidateSchedule: () => void;
+}) => {
+  const { isPrev, onNext, onPrev, isLastIndex, currentIndex, resetTabIndex } =
+    useTabIndex();
 
   const {
     register: registerProfile,
-    handleSubmit: handleProfileSubmit,
     reset: resetProfile,
     formState: { errors: profileErrors },
     control: controlProfile,
-    watch,
     trigger,
     setFocus,
     getValues: getProfileValues,
@@ -83,13 +79,10 @@ const DashModal = () => {
 
   const {
     register: registerAvailability,
-    handleSubmit: handleAvailabilitySubmit,
     reset: resetAvailability,
     formState: { errors: AvailabilityErrors },
     control: controlAvailability,
     watch: watchAvailability,
-    trigger: triggerAvailability,
-    setFocus: setFocusAvailability,
     setValue: setAvailability,
     getValues: getAvailability,
     setError: setAvailabilityError,
@@ -97,15 +90,22 @@ const DashModal = () => {
   } = useForm({
     defaultValues: {
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      schedule: {},
+      availability: {},
     },
     resolver: zodResolver(ScheduleAvailabilitySchema),
   });
 
+  const { mutate, isLoading: isCreatingSchedule } =
+    trpc.schedule.create.useMutation({
+      onSuccess: () => revalidateSchedule(),
+    });
+
   const { chatTime } = getProfileValues();
-  const EmptyAvailabilityError = AvailabilityErrors.schedule?.message;
   const TIME_POINTS = useMemo(() => generateTimeSlots(chatTime), [chatTime]);
+  const EmptyAvailabilityError = AvailabilityErrors.availability?.message;
+
   const resetOnClose = (...fns: any) => fns.forEach((fn: any) => fn && fn());
+
   const handleTabChange = async (arg: any) => {
     if (typeof arg === "number" && arg < currentIndex) {
       return onPrev();
@@ -118,10 +118,10 @@ const DashModal = () => {
     }
     if (currentIndex === 1) {
       const values = watchAvailability();
-      const isEmpty = Object.keys(values.schedule).length === 0;
+      const isEmpty = Object.keys(values.availability).length === 0;
 
       if (isEmpty) {
-        return setAvailabilityError("schedule", {
+        return setAvailabilityError("availability", {
           type: "custom",
           message: "Minimum of one time slot has to be selected.",
         });
@@ -139,6 +139,7 @@ const DashModal = () => {
     friday: false,
     saturday: false,
   });
+
   const resetDateEnabled = () =>
     setEnabled({
       sunday: false,
@@ -150,7 +151,17 @@ const DashModal = () => {
       saturday: false,
     });
 
-  // Profile Tab invalidated input focus
+  const handleCreateSchedule = () => {
+    const profileValues = getProfileValues();
+    const availabilityValues = getAvailability();
+    const newSchedule = {
+      ...profileValues,
+      ...availabilityValues,
+    };
+
+    mutate(newSchedule);
+  };
+
   useEffect(() => {
     const firstError = (
       Object.keys(profileErrors) as Array<keyof typeof profileErrors>
@@ -167,9 +178,9 @@ const DashModal = () => {
   return (
     <Modal>
       <ModalOpenButton>
-        <button className=" inline-flex h-10 items-center  rounded-md bg-black px-4  text-white">
-          Create
-          <FiPlus className="ml-5" strokeWidth={3} />
+        <button className=" inline-flex h-10 items-center rounded-md bg-brand_color px-6  text-sm font-semibold text-black/80 hover:bg-yellow-200">
+          New
+          <FiPlus className="ml-3" strokeWidth={3} />
         </button>
       </ModalOpenButton>
       <ModalContents
@@ -190,7 +201,7 @@ const DashModal = () => {
           <ModalDismissButton>
             <button
               type="button"
-              className="absolute top-5 right-7 inline-flex justify-center rounded-md border border-transparent bg-neutral-100 px-2 py-1 text-sm font-medium text-black hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="absolute top-5 right-7 inline-flex justify-center rounded-md border border-transparent bg-brand_bg px-2 py-1 text-sm font-medium text-yellow-50  hover:bg-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
               onClick={() =>
                 resetOnClose(
                   resetProfile,
@@ -204,82 +215,95 @@ const DashModal = () => {
             </button>
           </ModalDismissButton>
         </div>
-        <div className="mt-6 w-full  px-2 sm:px-0">
-          <Tab.Group
-            vertical
-            manual
-            defaultIndex={0}
-            selectedIndex={currentIndex}
-            onChange={handleTabChange}
-          >
-            <Tab.List className="flex max-w-sm space-x-2 rounded-lg bg-black/90 p-1 ">
-              {ModalTabs.map((tab) => (
-                <Tab
-                  key={tab}
-                  className={({ selected }) =>
-                    classNames(
-                      "w-full rounded-md py-1.5 text-sm font-medium leading-5 text-white",
-                      "transition-all duration-100  focus:outline-none ",
-                      selected
-                        ? "bg-white text-black/100 shadow"
-                        : "hover:bg-white/[0.1]"
-                    )
-                  }
-                >
-                  {tab}
-                </Tab>
-              ))}
-            </Tab.List>
-            <Tab.Panels>
-              <Tab.Panel>
-                <ProfileTab
-                  profileErrors={profileErrors}
-                  registerProfile={registerProfile}
-                  controlProfile={controlProfile}
-                />
-              </Tab.Panel>
-              <Tab.Panel>
-                <AvailabilityTab
-                  registerAvailability={registerAvailability}
-                  AvailabilityError={EmptyAvailabilityError ?? ""}
-                  controlAvailability={controlAvailability}
-                  resetAvailability={resetAvailability}
-                  setAvailability={setAvailability}
-                  getAvailability={getAvailability}
-                  TIME_POINTS={TIME_POINTS}
-                  clearAvailabilityError={clearAvailabilityError}
-                  enabled={enabled}
-                  setEnabled={setEnabled}
-                />
-              </Tab.Panel>
-              <Tab.Panel>
-                <ConfirmTab
-                  getProfileValues={getProfileValues}
-                  getAvailability={getAvailability}
-                />
-              </Tab.Panel>
-            </Tab.Panels>
-          </Tab.Group>
-        </div>
+
+        <Tab.Group
+          vertical
+          manual
+          defaultIndex={0}
+          selectedIndex={currentIndex}
+          onChange={handleTabChange}
+        >
+          <Tab.List className="mt-5 flex max-w-sm space-x-2">
+            {ModalTabs.map((tab) => (
+              <Tab
+                key={tab}
+                className={({ selected }) =>
+                  classNames(
+                    "text-sm font-medium  text-yellow-50",
+                    "outline-none transition-all  duration-200 ",
+                    selected
+                      ? " text-brand_color underline underline-offset-4"
+                      : ""
+                  )
+                }
+              >
+                {tab}
+              </Tab>
+            ))}
+          </Tab.List>
+          <Tab.Panels>
+            <Tab.Panel>
+              <ProfileTab
+                profileErrors={profileErrors}
+                registerProfile={registerProfile}
+                controlProfile={controlProfile}
+              />
+            </Tab.Panel>
+            <Tab.Panel>
+              <AvailabilityTab
+                registerAvailability={registerAvailability}
+                AvailabilityError={EmptyAvailabilityError ?? ""}
+                controlAvailability={controlAvailability}
+                resetAvailability={resetAvailability}
+                setAvailability={setAvailability}
+                getAvailability={getAvailability}
+                TIME_POINTS={TIME_POINTS}
+                clearAvailabilityError={clearAvailabilityError}
+                enabled={enabled}
+                setEnabled={setEnabled}
+              />
+            </Tab.Panel>
+            <Tab.Panel>
+              <ConfirmTab
+                getProfileValues={getProfileValues}
+                getAvailability={getAvailability}
+              />
+            </Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
 
         <div className="mt-4 flex w-full  justify-end">
           {isPrev && (
             <button
               type="button"
-              className="mr-3 inline-flex  w-24 items-center justify-center rounded-md   border border-transparent bg-neutral-100 px-4 py-2 text-sm font-medium text-black hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="mr-3 inline-flex  w-24 items-center justify-center rounded-md   border border-transparent bg-yellow-50 px-4 py-2 text-sm font-medium text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
               onClick={onPrev}
             >
               Prev
             </button>
           )}
-          <button
-            type="button"
-            className="mr-3 inline-flex w-24 items-center justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            onClick={handleTabChange}
-          >
-            {isLastIndex ? "Create" : "Next"}
-            <FiArrowRight className="ml-2" />
-          </button>
+
+          {isLastIndex ? (
+            <ModalDismissButton>
+              <button
+                type="button"
+                className="mr-3 inline-flex w-24 items-center justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                onClick={() => handleCreateSchedule()}
+              >
+                {isCreatingSchedule ? "creating..." : "Create"}
+                <FiArrowRight className="ml-2" />
+              </button>
+            </ModalDismissButton>
+          ) : (
+            <button
+              type="button"
+              className=" inline-flex h-10 items-center rounded-md bg-brand_color px-6  text-sm font-semibold text-black/80 hover:bg-yellow-200"
+              onClick={handleTabChange}
+            >
+              Next
+              <FiArrowRight className="ml-2" />
+            </button>
+          )}
         </div>
       </ModalContents>
     </Modal>

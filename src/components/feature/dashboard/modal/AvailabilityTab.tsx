@@ -25,7 +25,6 @@ const DATES = [
 ];
 
 const AvailabilityTab = ({
-  registerAvailability,
   AvailabilityError,
   controlAvailability,
   resetAvailability,
@@ -115,27 +114,29 @@ const Date = ({
         checked={enabled[date]}
         onChange={() => {
           if (enabled[date]) {
-            const { [date]: _, ...rest } = getAvailability("schedule");
-            setAvailability("schedule", rest);
+            const { [date]: _, ...rest } = getAvailability("availability");
+            setAvailability("availability", rest);
           }
 
           setEnabled({ ...enabled, [date]: !enabled[date] });
         }}
         className={`${
-          enabled[date] ? "bg-black" : "bg-gray-200"
-        } relative inline-flex h-5 w-9 items-center rounded-full`}
+          enabled[date] ? "border-brand_color " : "border-yellow-50"
+        } relative inline-flex h-5 w-9 items-center rounded-full border-2 bg-black`}
       >
         <span className="sr-only">Enable notifications</span>
         <span
           className={`${
-            enabled[date] ? "translate-x-4" : "translate-x-1"
-          } inline-block h-4 w-4 transform rounded-full bg-white transition duration-200`}
+            enabled[date]
+              ? "translate-x-4 bg-brand_color"
+              : "translate-x-1 bg-yellow-50"
+          } inline-block h-3 w-3 transform rounded-full  transition duration-200`}
         />
       </Switch>
       <div className="ml-5 w-16">
         <span
           className={` text-sm capitalize ${
-            enabled[date] ? "text-black" : "w-10 text-neutral-400"
+            enabled[date] ? "text-neutral-400" : "w-10 text-neutral-400"
           }`}
         >
           {date}
@@ -159,7 +160,6 @@ const Date = ({
 const TimePicker = ({
   date,
   controlAvailability,
-  resetAvailability,
   setAvailability,
   getAvailability,
   TIME_POINTS,
@@ -176,20 +176,21 @@ const TimePicker = ({
   const [firstRender, setFirstRender] = useState(true);
 
   useEffect(() => {
-    const prev = getAvailability("schedule");
+    const prev = getAvailability("availability");
 
-    setAvailability("schedule", {
+    setAvailability("availability", {
       ...prev,
-      [date]: { FROM: "9:00am", TO: "10:00am" },
+      [date]: { from: "9:00am", to: "10:00am" },
     });
     setFirstRender(false);
     clearAvailabilityError();
-
-    // return () => {
-    //   const { [date]: _, ...rest } = getAvailability("schedule");
-    //   setAvailability("schedule", rest);
-    // };
-  }, []);
+  }, [
+    getAvailability,
+    setFirstRender,
+    clearAvailabilityError,
+    date,
+    setAvailability,
+  ]);
 
   if (firstRender) {
     return <></>;
@@ -197,7 +198,7 @@ const TimePicker = ({
   return (
     <div className="ml-10 flex items-center gap-5">
       <Controller
-        name="schedule"
+        name="availability"
         control={controlAvailability}
         render={({ field: { onChange, value } }) => {
           return (
@@ -206,21 +207,28 @@ const TimePicker = ({
                 <Listbox
                   value={value}
                   onChange={(value) => {
-                    const prev = getAvailability("schedule");
-
+                    const prev = getAvailability("availability");
+                    const index = TIME_POINTS.findIndex(
+                      (ele) => ele === String(value)
+                    );
+                    console.log(value);
                     onChange({
                       ...prev,
-                      [date]: { ...prev[date], FROM: value },
+                      [date]: {
+                        ...prev[date],
+                        from: value,
+                        to: TIME_POINTS[index + 1],
+                      },
                     });
                   }}
                 >
                   <div className="relative mt-1">
-                    <Listbox.Button className="relative w-full cursor-pointer rounded-lg border border-neutral-300 bg-white py-2  pl-3 pr-10 text-left sm:text-sm">
-                      <span className="block truncate">
-                        {value[date]?.FROM}
+                    <Listbox.Button className="relative w-full cursor-pointer rounded-lg border border-yellow-50 bg-neutral-700 py-2  pl-3 pr-10 text-left sm:text-sm">
+                      <span className="block truncate text-yellow-50">
+                        {value[date]?.from}
                       </span>
                       <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                        <FiChevronDown />
+                        <FiChevronDown className="text-yellow-50" />
                       </span>
                     </Listbox.Button>
                     <Transition
@@ -233,13 +241,13 @@ const TimePicker = ({
                         {TIME_POINTS.slice(
                           0,
                           TIME_POINTS.findIndex(
-                            (element) => element === value[date]?.TO
+                            (element) => element === value[date]?.to
                           )
                         ).map((point, personIdx) => (
                           <Listbox.Option
                             key={personIdx}
                             className={`relative cursor-default select-none py-2 pl-10 pr-4 ${
-                              point === value[date]?.FROM
+                              point === value[date]?.from
                                 ? "bg-black text-white"
                                 : "text-gray-900"
                             }`}
@@ -251,11 +259,11 @@ const TimePicker = ({
                               >
                                 {point}
                               </span>
-                              {point === value[date]?.FROM ? (
+                              {point === value[date]?.from ? (
                                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
                                   <FiCheck
                                     className={`${
-                                      point === value[date]?.FROM
+                                      point === value[date]?.from
                                         ? "text-white"
                                         : "text-black"
                                     }`}
@@ -271,21 +279,24 @@ const TimePicker = ({
                 </Listbox>
               </div>
 
-              {"-"}
+              <span className="text-yellow-50">-</span>
 
               <div className="w-32">
                 <Listbox
                   value={value}
                   onChange={(value) => {
-                    const prev = getAvailability("schedule");
+                    const prev = getAvailability("availability");
 
-                    onChange({ ...prev, [date]: { ...prev[date], TO: value } });
+                    onChange({ ...prev, [date]: { ...prev[date], to: value } });
                   }}
                 >
                   <div className="relative mt-1">
-                    <Listbox.Button className="relative w-full cursor-pointer  rounded-lg border border-neutral-300 bg-white py-2 pl-3  pr-10 text-left sm:text-sm">
-                      <span className="block truncate"> {value[date]?.TO}</span>
-                      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                    <Listbox.Button className="rrelative w-full cursor-pointer rounded-lg border border-yellow-50 bg-neutral-700 py-2  pl-3 pr-10 text-left sm:text-sm">
+                      <span className="block truncate text-yellow-50">
+                        {" "}
+                        {value[date]?.to}
+                      </span>
+                      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-yellow-50">
                         <FiChevronDown />
                       </span>
                     </Listbox.Button>
@@ -298,13 +309,13 @@ const TimePicker = ({
                       <Listbox.Options className="absolute  z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                         {TIME_POINTS.slice(
                           TIME_POINTS.findIndex(
-                            (element) => element === value[date]?.FROM
+                            (element) => element === value[date]?.from
                           ) + 1
                         ).map((point, personIdx) => (
                           <Listbox.Option
                             key={personIdx}
                             className={`relative cursor-default select-none py-2 pl-10 pr-4 ${
-                              point === value[date]?.TO
+                              point === value[date]?.to
                                 ? "bg-black text-white"
                                 : "text-gray-900"
                             }`}
@@ -314,13 +325,13 @@ const TimePicker = ({
                               <span className={`block truncate font-normal`}>
                                 {point}
                               </span>
-                              {point === value[date]?.TO ? (
+                              {point === value[date]?.to ? (
                                 <span
                                   className={`absolute inset-y-0 left-0 flex items-center pl-3 text-black`}
                                 >
                                   <FiCheck
                                     className={`${
-                                      point === value[date]?.TO
+                                      point === value[date]?.to
                                         ? "text-white"
                                         : "text-black"
                                     }`}
@@ -361,30 +372,44 @@ const TimeZonePicker = ({
                 ...baseStyles,
                 width: "46%",
                 marginBottom: "10px",
-                borderColor: "rgb(212 212 212)",
+                borderColor: "#404040",
                 "&:hover": {
-                  borderColor: "rgb(212 212 212)",
+                  borderColor: "#FDE68A",
                 },
                 cursor: "pointer",
-
+                backgroundColor: "#404040",
                 boxShadow: state.isFocused ? "rgb(0 0 0)" : "none",
                 fontSize: "14px",
                 svg: {
-                  color: "black",
+                  color: "rgb(163 163 163)",
                 },
               }),
-              menu: (styles) => ({ ...styles, width: "46%" }),
+              input: (styles) => ({
+                ...styles,
+                color: "#fefce8",
+              }),
+              singleValue: (styles) => ({
+                ...styles,
+                color: "rgb(163 163 163)",
+              }),
+
+              menu: (styles) => ({
+                ...styles,
+                width: "46%",
+                background: "#404040",
+              }),
               option: (styles, { isDisabled, isSelected }) => {
                 return {
                   ...styles,
                   fontSize: "14px",
-                  background: isSelected ? "black" : "white",
+                  color: isSelected ? "black" : "rgb(254 252 232)",
+                  background: isSelected ? "#FDE68A" : "#404040",
                   cursor: isDisabled ? "not-allowed" : "default",
                   "&:active": {
                     background: "rgb(245 245 245)",
                   },
                   "&:hover": {
-                    background: !isSelected ? "rgb(245 245 245)" : "black",
+                    background: !isSelected ? "#1F1F23" : "#FDE68A",
                   },
                 };
               },
