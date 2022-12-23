@@ -4,6 +4,7 @@ import { FiChevronDown, FiCheck } from "react-icons/fi";
 import { Controller, useFormContext } from "react-hook-form";
 import { Fragment, useEffect, useState } from "react";
 import type { AvailabilityFormValues, ScheduleAvailability } from ".";
+import { useStateMachine, type GlobalState } from "little-state-machine";
 
 const TimePicker = ({
   date,
@@ -12,8 +13,11 @@ const TimePicker = ({
   date: string;
   TIME_POINTS: string[];
 }) => {
+  const sessionFromValues = JSON.parse(
+    sessionStorage.getItem("newScheduleInputs") ?? "{}"
+  );
   const [firstRender, setFirstRender] = useState(true);
-  const { control, setValue, clearErrors, getValues } =
+  const { control, setValue, getValues } =
     useFormContext<AvailabilityFormValues>();
 
   const handleFromChange = (
@@ -42,12 +46,37 @@ const TimePicker = ({
   };
 
   useEffect(() => {
-    setValue("availability", {
-      ...getValues("availability"),
-      [date]: { from: "9:00am", to: "10:00am" },
-    });
     setFirstRender(false);
-  }, [getValues, setFirstRender, clearErrors, date, setValue]);
+    if (!sessionFromValues?.data?.availability) {
+      setValue("availability", {
+        ...getValues("availability"),
+        [date]: { from: "9:00am", to: "10:00am" },
+      });
+    }
+
+    return () => {
+      const { [date]: _, ...rest } = getValues("availability");
+      setValue("availability", rest);
+    };
+  }, [sessionFromValues, getValues, setFirstRender, date, setValue]);
+
+  useEffect(() => {
+    if (
+      sessionFromValues?.data?.availability &&
+      date in sessionFromValues?.data?.availability
+    ) {
+      const { from, to } = sessionFromValues.data.availability[date];
+      setValue("availability", {
+        ...getValues("availability"),
+        [date]: { from, to },
+      });
+    } else {
+      setValue("availability", {
+        ...getValues("availability"),
+        [date]: { from: "9:00am", to: "10:00am" },
+      });
+    }
+  }, [sessionFromValues, getValues, date, setValue]);
 
   if (firstRender) {
     return <></>;

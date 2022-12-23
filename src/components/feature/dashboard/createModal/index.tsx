@@ -69,7 +69,7 @@ const DashModal = () => {
 
   const TIME_POINTS = useMemo(() => generateTimeSlots(chatTime), [chatTime]);
 
-  const resetOnClose = (...fns: any) => fns.forEach((fn: any) => fn && fn());
+  // const callAll = (...fns: any) => fns.forEach((fn: any) => fn && fn());
 
   // const resetDateEnabled = () =>
   //   setEnabled({

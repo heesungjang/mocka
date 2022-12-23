@@ -32,7 +32,7 @@ createStore(
   },
   {
     name: "newScheduleInputs",
-    persist: "none",
+    persist: "action",
   }
 );
 

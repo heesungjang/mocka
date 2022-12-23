@@ -1,10 +1,9 @@
-import { useFormContext } from "react-hook-form";
-
+import DateSwitch from "../DateSwitch";
+import { ErrorMessage } from "../ErrorMessage";
+import TimeZonePicker from "../TimezonePicker";
 import type { AvailabilityFormValues } from "..";
 import { useStateMachine, type GlobalState } from "little-state-machine";
-import TimeZonePicker from "../TimezonePicker";
-import { ErrorMessage } from "../ErrorMessage";
-import DateSwitch from "../DateSwitch";
+import { useFormContext } from "react-hook-form";
 
 const DATES = [
   "sunday",
@@ -34,10 +33,16 @@ const AvailabilityTab = ({
   const {
     handleSubmit,
     formState: { errors },
+    setError,
+    getValues,
   } = useFormContext<AvailabilityFormValues>();
   const { state, actions } = useStateMachine({ updateTimezoneAction });
-
+  
   const onSubmit = (data: AvailabilityFormValues) => {
+    if (Object.keys(data.availability).length === 0) {
+      setError("availability", { type: "custom", message: "null" });
+      return;
+    }
     setTabIndex(2);
     actions.updateTimezoneAction(data);
   };
@@ -48,7 +53,7 @@ const AvailabilityTab = ({
 
   return (
     <form
-      className="mt-3  mb-10 w-full flex-col gap-5"
+      className="mt-3  w-full flex-col gap-5"
       onSubmit={handleSubmit(onSubmit)}
     >
       <span className="mb-2 inline-block text-sm font-normal text-neutral-500">
@@ -66,7 +71,9 @@ const AvailabilityTab = ({
 
       <ErrorMessage msg={errorMessage} />
 
-      <input type="submit" />
+      <div className="mt-5 flex w-full justify-end">
+        <button className="brand_button">Next</button>
+      </div>
     </form>
   );
 };

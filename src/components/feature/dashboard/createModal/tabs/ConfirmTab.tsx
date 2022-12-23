@@ -21,7 +21,6 @@ const ConfirmTab = ({
     };
     mutate(newSchedule);
   };
-  console.log(availabilityValues);
 
   const availableTimes = Object.entries(availabilityValues.availability).map(
     (time) => {
