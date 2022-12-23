@@ -2,51 +2,67 @@ import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import { getSession } from "next-auth/react";
 import SideBarLayout from "../../components/layouts/SideTabLayout";
-import DashBoardModal from "../../components/feature/dashboard/modal";
-import ContentLoader from "react-content-loader";
+import DashBoardModal from "../../components/feature/dashboard/createModal";
 import { FiCalendar, FiMoreHorizontal } from "react-icons/fi";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import ContentLayout from "../../components/layouts/ContentLayout";
+import { SkeletonLoader } from "../../components/feature/dashboard/lodaer/ScheduleLoader";
+import { createStore } from "little-state-machine";
+import { StateMachineProvider } from "little-state-machine";
+
+/**create global state machine store for new schedule form datas*/
+createStore(
+  {
+    data: {
+      title: "",
+      description: "",
+      chatTime: 15,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      availability: null,
+    },
+    dates: {
+      sunday: false,
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+    },
+  },
+  {
+    name: "newScheduleInputs",
+    persist: "none",
+  }
+);
 
 function DashBoard({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const {
-    data: scheduleData,
-    isLoading: scheduleLoading,
-    refetch,
-  } = trpc.schedule.get.useQuery();
-  const { isLoading: userLoading } = trpc.auth.getFullUserDetail.useQuery();
-  const revalidateSchedule = () => refetch();
+  const { data: scheduleData, isLoading: isScheduleLoading } =
+    trpc.schedule.get.useQuery();
+  const { isLoading: isUserLoading } = trpc.auth.getFullUserDetail.useQuery();
+
+  if (isScheduleLoading || isUserLoading) {
+    return <SkeletonLoader />;
+  }
 
   return (
-    <>
-      <div className="relative  flex flex-col items-start justify-between md:flex-row md:items-center">
-        <div>
-          <h1 className="text-5xl font-semibold capitalize text-yellow-50">
-            Dashboard
-          </h1>
-          <span className="mt-2 inline-block text-lg font-light text-neutral-400">
-            Create events to share for people to book on your calendar.
-          </span>
-        </div>
-        {!scheduleData && !scheduleLoading && (
-          <div className="mt-3 flex md:mt-0">
-            <DashBoardModal revalidateSchedule={revalidateSchedule} />
-          </div>
-        )}
-      </div>
-
+    <ContentLayout
+      title="Dashboard"
+      subTitle="Create events to share for people to book on your calendar."
+      modal={
+        <StateMachineProvider>
+          <DashBoardModal />
+        </StateMachineProvider>
+      }
+    >
       <span className="text-md mt-8 mb-3 inline-flex items-center font-semibold text-yellow-50 md:mt-12">
         <FiCalendar className="mr-1" /> My schedule
       </span>
       <div className="border-1  flex min-h-[320px]  w-full flex-col rounded-lg border border-solid border-white/5 p-6">
-        {userLoading || scheduleLoading ? (
-          <SkeletonLoader />
-        ) : !scheduleData ? (
-          <EmptyMsg />
-        ) : (
-          <ScheduleDetail />
-        )}
+        {!scheduleData && <EmptyMsg />}
+        {scheduleData && <ScheduleDetail />}
       </div>
-    </>
+    </ContentLayout>
   );
 }
 
@@ -95,34 +111,11 @@ const ScheduleDetail = () => {
 
 const EmptyMsg = () => (
   <div className="flex  min-h-[300px] w-full flex-col items-center justify-center">
-    <FiMoreHorizontal
-      className="mb-5 text-brand_color"
-      size={35}
-      // opacity={0.5}
-    />
+    <FiMoreHorizontal className="mb-5 text-brand_color" size={35} />
     <span className="text-md text-center font-semibold text-yellow-50">
       You don&apos;t have a mocka schedule yet.
     </span>
   </div>
-);
-
-const SkeletonLoader = () => (
-  <ContentLoader
-    uniqueKey="skeleton_loader"
-    speed={2}
-    width={476}
-    height={124}
-    viewBox="0 0 476 124"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
-  >
-    <rect x="48" y="8" rx="3" ry="3" width="88" height="6" />
-    <rect x="48" y="26" rx="3" ry="3" width="52" height="6" />
-    <rect x="0" y="56" rx="3" ry="3" width="410" height="6" />
-    <rect x="0" y="72" rx="3" ry="3" width="380" height="6" />
-    <rect x="0" y="88" rx="3" ry="3" width="178" height="6" />
-    <circle cx="20" cy="20" r="20" />
-  </ContentLoader>
 );
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

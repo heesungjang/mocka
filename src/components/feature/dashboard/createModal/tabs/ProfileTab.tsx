@@ -1,25 +1,39 @@
 import React from "react";
-import { RadioGroup } from "@headlessui/react";
-import type { ScheduleProfile } from "./index";
-import type {
-  Control,
-  UseFormRegister,
-  FieldErrorsImpl,
-} from "react-hook-form";
 import { Controller } from "react-hook-form";
+import { RadioGroup } from "@headlessui/react";
+import { useFormContext } from "react-hook-form";
+import type { ScheduleProfile } from "../index";
+import { type GlobalState, useStateMachine } from "little-state-machine";
+import { ErrorMessage } from "../ErrorMessage";
 
-const TIME_SLOT = [15, 30, 60];
+const updateAction = (globalState: GlobalState, payload: ScheduleProfile) => {
+  return { ...globalState, data: { ...globalState.data, ...payload } };
+};
+
 const ProfileTab = ({
-  registerProfile,
-  controlProfile,
-  profileErrors,
+  setTabIndex,
 }: {
-  registerProfile: UseFormRegister<ScheduleProfile>;
-  controlProfile: Control<ScheduleProfile, any>;
-  profileErrors: Partial<FieldErrorsImpl<ScheduleProfile>>;
+  setTabIndex: React.Dispatch<React.SetStateAction<number>>;
 }) => {
+  const TIME_SLOT = [15, 30, 60];
+  const { actions } = useStateMachine({ updateAction });
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useFormContext<ScheduleProfile>();
+
+  const onSubmit = async (data: ScheduleProfile) => {
+    setTabIndex(1);
+    actions.updateAction(data);
+  };
+
   return (
-    <form className="mt-7  min-h-[13rem] w-full">
+    <form
+      className="mt-7  min-h-[13rem] w-full"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <div className="flex flex-col">
         <label
           htmlFor="title"
@@ -31,14 +45,10 @@ const ProfileTab = ({
           placeholder="e.g. Fan Chat with Sophie"
           id="title"
           className="brand_input"
-          {...registerProfile("title", { required: true })}
+          {...register("title", { required: true })}
         />
+        <ErrorMessage msg={errors?.title?.message} />
       </div>
-      {profileErrors.title && (
-        <span className="mt-1 inline-block text-sm text-red-500">
-          {profileErrors.title.message}
-        </span>
-      )}
 
       <div className="flex flex-col">
         <label
@@ -52,30 +62,21 @@ const ProfileTab = ({
           placeholder="e.g. 30min video chat with me."
           id="description"
           className="brand_input"
-          {...registerProfile("description", { required: true })}
+          {...register("description", { required: true })}
         />
-
-        {profileErrors.description && (
-          <span className="mt-1 inline-block text-sm text-red-500">
-            {profileErrors.description.message}
-          </span>
-        )}
+        <ErrorMessage msg={errors?.description?.message} />
       </div>
 
       <label className="mt-4 inline-block text-sm font-normal text-yellow-50">
         Chat Time
       </label>
-
       <div className="mt-2 mb-12">
         <Controller
-          control={controlProfile}
+          control={control}
           name="chatTime"
           render={({ field: { onChange, value } }) => {
             return (
               <RadioGroup value={value} onChange={(value) => onChange(value)}>
-                <RadioGroup.Label className="sr-only">
-                  Server size
-                </RadioGroup.Label>
                 <div className="flex w-full gap-5">
                   {TIME_SLOT.map((slot) => (
                     <RadioGroup.Option
@@ -87,22 +88,14 @@ const ProfileTab = ({
                       }
                     >
                       {({ checked }) => (
-                        <>
-                          <div className="flex w-full items-center justify-between">
-                            <div className="flex items-center">
-                              <div className="text-sm">
-                                <RadioGroup.Label
-                                  as="p"
-                                  className={`font-medium  ${
-                                    checked ? "text-black" : "text-yellow-50"
-                                  }`}
-                                >
-                                  {slot} min
-                                </RadioGroup.Label>
-                              </div>
-                            </div>
-                          </div>
-                        </>
+                        <RadioGroup.Label
+                          as="p"
+                          className={`text-sm font-medium ${
+                            checked ? "text-black" : "text-yellow-50"
+                          }`}
+                        >
+                          {slot} min
+                        </RadioGroup.Label>
                       )}
                     </RadioGroup.Option>
                   ))}
@@ -111,6 +104,9 @@ const ProfileTab = ({
             );
           }}
         />
+      </div>
+      <div className="flex w-full justify-end">
+        <button className="brand_button">Next</button>
       </div>
     </form>
   );

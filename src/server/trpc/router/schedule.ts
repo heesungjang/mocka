@@ -1,5 +1,5 @@
 import { z, infer } from "zod";
-import { ScheduleAvailability } from "../../../components/feature/dashboard/modal";
+import { ScheduleAvailability } from "../../../components/feature/dashboard/createModal";
 
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 
