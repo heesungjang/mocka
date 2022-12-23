@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { trpc } from "../../../../utils/trpc";
 import { Tab } from "@headlessui/react";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiX } from "react-icons/fi";
 import classNames from "classnames";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useStateMachine } from "little-state-machine";
@@ -13,36 +13,33 @@ import React, { useMemo, useState } from "react";
 import ProfileTab from "./tabs/ProfileTab";
 import ConfirmTab from "./tabs/ConfirmTab";
 import AvailabilityTab from "./tabs/AvailabilityTab";
-import { Modal, ModalContents, ModalOpenButton } from "../../../generics/Modal";
+import {
+  Modal,
+  ModalContents,
+  ModalDismissButton,
+  ModalOpenButton,
+} from "../../../generics/Modal";
 
-export type ScheduleProfile = z.infer<typeof ScheduleProfileSchema>;
-export const ScheduleProfileSchema = z.object({
-  title: z.string().max(50).min(1),
-  description: z.string().max(100).min(1),
-  chatTime: z.number(),
-});
-
-export type AvailabilityFormValues = z.infer<typeof ScheduleAvailabilitySchema>;
-
-export type ScheduleAvailability = z.infer<typeof availabilitySchema>;
 const availabilitySchema = z.record(
   z.object({
     from: z.string(),
     to: z.string(),
   })
 );
+export const ScheduleProfileSchema = z.object({
+  title: z.string().max(50).min(1),
+  description: z.string().max(100).min(1),
+  chatTime: z.number(),
+});
 export const ScheduleAvailabilitySchema = z.object({
   availability: availabilitySchema,
   timeZone: z.string(),
 });
 
-const AVAILABILITY_FORM_CONFIG = {
-  defaultValues: {
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    availability: null,
-  },
-  resolver: zodResolver(ScheduleAvailabilitySchema),
-};
+export type ScheduleProfile = z.infer<typeof ScheduleProfileSchema>;
+export type ScheduleAvailability = z.infer<typeof availabilitySchema>;
+export type AvailabilityFormValues = z.infer<typeof ScheduleAvailabilitySchema>;
+
 const PROFILE_FORM_CONFIG = {
   defaultValues: {
     title: "",
@@ -50,6 +47,13 @@ const PROFILE_FORM_CONFIG = {
     chatTime: 15,
   },
   resolver: zodResolver(ScheduleProfileSchema),
+};
+const AVAILABILITY_FORM_CONFIG = {
+  defaultValues: {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    availability: null,
+  },
+  resolver: zodResolver(ScheduleAvailabilitySchema),
 };
 
 const DashModal = () => {
@@ -71,28 +75,6 @@ const DashModal = () => {
 
   // const callAll = (...fns: any) => fns.forEach((fn: any) => fn && fn());
 
-  // const resetDateEnabled = () =>
-  //   setEnabled({
-  //     sunday: false,
-  //     monday: false,
-  //     tuesday: false,
-  //     wednesday: false,
-  //     thursday: false,
-  //     friday: false,
-  //     saturday: false,
-  //   });
-
-  // const handleCreateSchedule = () => {
-  //   const profileValues = getProfileValues();
-  //   const availabilityValues = getAvailability();
-  //   const newSchedule = {
-  //     ...profileValues,
-  //     ...availabilityValues,
-  //   };
-
-  //   mutate(newSchedule);
-  // };
-
   /** If there is schedule new create schedule modal should not be accessible*/
   if (schedule) {
     return null;
@@ -106,37 +88,16 @@ const DashModal = () => {
           <FiPlus className="ml-3" strokeWidth={3} />
         </button>
       </ModalOpenButton>
-      <ModalContents
-        title="Create new schedule"
-        // onClose={() =>
-        //   resetOnClose(
-        //     resetProfile,
-        //     resetAvailability,
-        //     resetTabIndex,
-        //     resetDateEnabled
-        //   )
-        // }
-      >
+      <ModalContents title="Create new schedule">
         <div className="mt-2 flex justify-between">
           <p className="text-sm text-neutral-400">
             Setup your availability and price to create new mocka schedule.
           </p>
-          {/* <ModalDismissButton>
-            <button
-              type="button"
-              className="absolute top-5 right-7 inline-flex justify-center rounded-md border border-transparent bg-brand_bg px-2 py-1 text-sm font-medium text-yellow-50  hover:bg-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
-              onClick={() =>
-                resetOnClose(
-                  resetProfile,
-                  resetAvailability,
-                  resetTabIndex,
-                  resetDateEnabled
-                )
-              }
-            >
+          <ModalDismissButton>
+            <button type="button" className="dismiss_button">
               <FiX size={18} />
             </button>
-          </ModalDismissButton> */}
+          </ModalDismissButton>
         </div>
 
         <Tab.Group

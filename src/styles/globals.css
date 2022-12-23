@@ -9,4 +9,7 @@
   .brand_button {
     @apply inline-flex h-10 items-center rounded-md bg-brand_color px-6  text-sm font-semibold text-black/80 hover:bg-yellow-200;
   }
+  .dismiss_button {
+    @apply absolute top-5 right-7 inline-flex justify-center rounded-md border border-transparent bg-brand_bg px-2 py-1 text-sm font-medium text-yellow-50  hover:bg-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2;
+  }
 }
