@@ -10,32 +10,6 @@ import { SkeletonLoader } from "../../components/feature/dashboard/lodaer/Schedu
 import { createStore } from "little-state-machine";
 import { StateMachineProvider } from "little-state-machine";
 
-/**create global state machine store for new schedule form datas*/
-createStore(
-  {
-    data: {
-      title: "",
-      description: "",
-      chatTime: 15,
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      availability: null,
-    },
-    dates: {
-      sunday: false,
-      monday: false,
-      tuesday: false,
-      wednesday: false,
-      thursday: false,
-      friday: false,
-      saturday: false,
-    },
-  },
-  {
-    name: "newScheduleInputs",
-    persist: "action",
-  }
-);
-
 function DashBoard({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { data: scheduleData, isLoading: isScheduleLoading } =
     trpc.schedule.get.useQuery();
@@ -133,5 +107,34 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: { session },
   };
 };
+
+/**create global state machine store for new schedule form datas*/
+export const initialCreateNewScheduleState = {
+  data: {
+    title: "",
+    description: "",
+    chatTime: 15,
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    availability: {},
+  },
+  dates: {
+    sunday: false,
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
+    saturday: false,
+  },
+};
+createStore(
+  {
+    ...initialCreateNewScheduleState,
+  },
+  {
+    name: "newScheduleInputs",
+    persist: "action",
+  }
+);
 
 export default DashBoard;

@@ -8,6 +8,16 @@ export const appRoutes: IAppRouter = {
   DASH_BOARD_PAGE: "/dashboard",
 };
 
+export const DATES = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
+
 export const TIME_POINTS = [
   "00:00",
   "01:00",

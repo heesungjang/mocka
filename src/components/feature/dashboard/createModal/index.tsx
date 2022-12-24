@@ -1,24 +1,32 @@
 import { z } from "zod";
 import { trpc } from "../../../../utils/trpc";
 import { Tab } from "@headlessui/react";
+import { callAll } from "../../../../utils/fns";
 import { FiPlus, FiX } from "react-icons/fi";
 import classNames from "classnames";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useStateMachine } from "little-state-machine";
+import { useStateMachine, type GlobalState } from "little-state-machine";
 import { generateTimeSlots } from "../../../../utils/generatetimeSlots";
 import { useForm, FormProvider } from "react-hook-form";
 import React, { useMemo, useState } from "react";
+import { initialCreateNewScheduleState } from "../../../../pages/dashboard";
 
 /*Modal Tabs & Modal Comps*/
-import ProfileTab from "./tabs/ProfileTab";
-import ConfirmTab from "./tabs/ConfirmTab";
-import AvailabilityTab from "./tabs/AvailabilityTab";
 import {
   Modal,
   ModalContents,
   ModalDismissButton,
   ModalOpenButton,
 } from "../../../generics/Modal";
+import ProfileTab from "./tabs/ProfileTab";
+import ConfirmTab from "./tabs/ConfirmTab";
+import AvailabilityTab from "./tabs/AvailabilityTab";
+
+const resetAction = (globalState: GlobalState) => {
+  return {
+    ...initialCreateNewScheduleState,
+  };
+};
 
 const availabilitySchema = z.record(
   z.object({
@@ -51,13 +59,13 @@ const PROFILE_FORM_CONFIG = {
 const AVAILABILITY_FORM_CONFIG = {
   defaultValues: {
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    availability: null,
+    availability: {},
   },
   resolver: zodResolver(ScheduleAvailabilitySchema),
 };
 
 const DashModal = () => {
-  const { state } = useStateMachine();
+  const { state, actions } = useStateMachine({ resetAction });
   const chatTime = state.data.chatTime;
   const ModalTabs = ["Profile", "Availability", "Confirm"];
   const [tabIndex, setTabIndex] = useState(0);
@@ -73,7 +81,14 @@ const DashModal = () => {
 
   const TIME_POINTS = useMemo(() => generateTimeSlots(chatTime), [chatTime]);
 
-  // const callAll = (...fns: any) => fns.forEach((fn: any) => fn && fn());
+  const resetOnclose = () =>
+    callAll(
+      () => setTabIndex(0),
+      () => profileMethods.reset(),
+      () => availabilityMethods.reset(),
+      () => actions.resetAction(),
+      () => sessionStorage.removeItem("newScheduleInputs")
+    );
 
   /** If there is schedule new create schedule modal should not be accessible*/
   if (schedule) {
@@ -94,7 +109,11 @@ const DashModal = () => {
             Setup your availability and price to create new mocka schedule.
           </p>
           <ModalDismissButton>
-            <button type="button" className="dismiss_button">
+            <button
+              type="button"
+              className="dismiss_button"
+              onClick={resetOnclose}
+            >
               <FiX size={18} />
             </button>
           </ModalDismissButton>
@@ -134,17 +153,14 @@ const DashModal = () => {
             <Tab.Panel>
               <FormProvider {...availabilityMethods}>
                 <AvailabilityTab
-                  TIME_POINTS={TIME_POINTS}
                   setTabIndex={setTabIndex}
+                  TIME_POINTS={TIME_POINTS}
                 />
               </FormProvider>
             </Tab.Panel>
-            {/* <Tab.Panel>
-                <ConfirmTab
-                  getProfileValues={getProfileValues}
-                  getAvailability={getAvailability}
-                />
-              </Tab.Panel> */}
+            <Tab.Panel>
+              <ConfirmTab />
+            </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
       </ModalContents>

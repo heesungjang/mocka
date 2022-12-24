@@ -8,6 +8,29 @@ const toggleEnabledDate = (globalState: GlobalState, payload: string) => {
     dates: { ...globalState.dates, [payload]: !globalState.dates[payload] },
   };
 };
+
+const setInitialTime = (globalState: GlobalState, date: string) => {
+  return {
+    ...globalState,
+    data: {
+      ...globalState.data,
+      availability: {
+        ...globalState.data.availability,
+        [date]: {
+          from: "9:00am",
+          to: "10:00am",
+        },
+      },
+    },
+  };
+};
+const unsetInitialTime = (globalState: GlobalState, date: string) => {
+  const newState = { ...globalState };
+  delete newState.data.availability[date];
+
+  return newState;
+};
+
 const DateSwitch = ({
   date,
   TIME_POINTS,
@@ -15,10 +38,19 @@ const DateSwitch = ({
   date: string;
   TIME_POINTS: string[];
 }) => {
-  const { state, actions } = useStateMachine({ toggleEnabledDate });
+  const { state, actions } = useStateMachine({
+    toggleEnabledDate,
+    setInitialTime,
+    unsetInitialTime,
+  });
   const { dates } = state;
   const isOpen = dates[date];
   const handleToggle = () => {
+    if (state.dates[date] === false) {
+      actions.setInitialTime(date);
+    } else {
+      actions.unsetInitialTime(date);
+    }
     actions.toggleEnabledDate(date);
   };
 

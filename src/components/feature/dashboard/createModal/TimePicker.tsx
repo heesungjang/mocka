@@ -4,7 +4,7 @@ import { FiChevronDown, FiCheck } from "react-icons/fi";
 import { Controller, useFormContext } from "react-hook-form";
 import { Fragment, useEffect, useState } from "react";
 import type { AvailabilityFormValues, ScheduleAvailability } from ".";
-import { useStateMachine, type GlobalState } from "little-state-machine";
+import { useStateMachine } from "little-state-machine";
 
 const TimePicker = ({
   date,
@@ -13,9 +13,7 @@ const TimePicker = ({
   date: string;
   TIME_POINTS: string[];
 }) => {
-  const sessionFromValues = JSON.parse(
-    sessionStorage.getItem("newScheduleInputs") ?? "{}"
-  );
+  const { state } = useStateMachine();
   const [firstRender, setFirstRender] = useState(true);
   const { control, setValue, getValues } =
     useFormContext<AvailabilityFormValues>();
@@ -25,10 +23,12 @@ const TimePicker = ({
     onChange: (...event: any[]) => void
   ) => {
     const index = TIME_POINTS.findIndex((ele) => ele === String(value));
+    const prev = getValues("availability");
+
     onChange({
-      ...getValues("availability"),
+      ...prev,
       [date]: {
-        ...getValues("availability")[date],
+        ...prev[date],
         from: value,
         to: TIME_POINTS[index + 1],
       },
@@ -39,44 +39,32 @@ const TimePicker = ({
     value: ScheduleAvailability,
     onChange: (...event: any[]) => void
   ) => {
+    const prev = getValues("availability");
     onChange({
-      ...getValues("availability"),
-      [date]: { ...getValues("availability")[date], to: value },
+      ...prev,
+      [date]: { ...prev[date], to: value },
     });
   };
 
   useEffect(() => {
-    setFirstRender(false);
-    if (!sessionFromValues?.data?.availability) {
+    const { availability } = state.data;
+    const from = availability?.[date]?.from;
+    const to = availability?.[date]?.to;
+
+    if (from && to) {
       setValue("availability", {
         ...getValues("availability"),
-        [date]: { from: "9:00am", to: "10:00am" },
+        [date]: { from, to },
       });
     }
+
+    setFirstRender(false);
 
     return () => {
       const { [date]: _, ...rest } = getValues("availability");
       setValue("availability", rest);
     };
-  }, [sessionFromValues, getValues, setFirstRender, date, setValue]);
-
-  useEffect(() => {
-    if (
-      sessionFromValues?.data?.availability &&
-      date in sessionFromValues?.data?.availability
-    ) {
-      const { from, to } = sessionFromValues.data.availability[date];
-      setValue("availability", {
-        ...getValues("availability"),
-        [date]: { from, to },
-      });
-    } else {
-      setValue("availability", {
-        ...getValues("availability"),
-        [date]: { from: "9:00am", to: "10:00am" },
-      });
-    }
-  }, [sessionFromValues, getValues, date, setValue]);
+  }, []);
 
   if (firstRender) {
     return <></>;

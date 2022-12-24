@@ -8,7 +8,7 @@ declare module "little-state-machine" {
       description: string;
       chatTime: number;
       timeZone: string;
-      availability: ScheduleAvailability | null;
+      availability: ScheduleAvailability;
     };
     dates: {
       [key: string]: boolean;

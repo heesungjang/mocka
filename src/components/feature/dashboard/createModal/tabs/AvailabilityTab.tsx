@@ -4,16 +4,7 @@ import TimeZonePicker from "../TimezonePicker";
 import type { AvailabilityFormValues } from "..";
 import { useStateMachine, type GlobalState } from "little-state-machine";
 import { useFormContext } from "react-hook-form";
-
-const DATES = [
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-];
+import { DATES } from "../../../../../constants/client";
 
 /**little state machine actions for wizard from*/
 const updateTimezoneAction = (
@@ -31,13 +22,15 @@ const AvailabilityTab = ({
   setTabIndex: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const {
+    setError,
     handleSubmit,
     formState: { errors },
-    setError,
-    getValues,
   } = useFormContext<AvailabilityFormValues>();
-  const { state, actions } = useStateMachine({ updateTimezoneAction });
-  
+  const { actions } = useStateMachine({ updateTimezoneAction });
+  const errorMessage = errors?.availability?.message
+    ? "at least one available day has to selected"
+    : null;
+
   const onSubmit = (data: AvailabilityFormValues) => {
     if (Object.keys(data.availability).length === 0) {
       setError("availability", { type: "custom", message: "null" });
@@ -46,10 +39,6 @@ const AvailabilityTab = ({
     setTabIndex(2);
     actions.updateTimezoneAction(data);
   };
-
-  const errorMessage = errors?.availability?.message
-    ? "at least one available day has to selected"
-    : null;
 
   return (
     <form
