@@ -90,6 +90,12 @@ const DashModal = () => {
       () => sessionStorage.removeItem("newScheduleInputs")
     );
 
+  const onCreate = (payload: AvailabilityFormValues & ScheduleProfile) =>
+    callAll(
+      () => mutate(payload),
+      () => resetOnclose()
+    );
+
   /** If there is schedule new create schedule modal should not be accessible*/
   if (schedule) {
     return null;
@@ -159,7 +165,7 @@ const DashModal = () => {
               </FormProvider>
             </Tab.Panel>
             <Tab.Panel>
-              <ConfirmTab />
+              <ConfirmTab onCreate={onCreate} />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>

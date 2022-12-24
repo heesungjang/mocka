@@ -30,7 +30,7 @@ function DashBoard({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
       }
     >
       <span className="text-md mt-8 mb-3 inline-flex items-center font-semibold text-yellow-50 md:mt-12">
-        <FiCalendar className="mr-1" /> My schedule
+        <FiCalendar className="mr-1" /> My schedule detail
       </span>
       <div className="border-1  flex min-h-[320px]  w-full flex-col rounded-lg border border-solid border-white/5 p-6">
         {!scheduleData && <EmptyMsg />}

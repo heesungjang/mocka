@@ -4,44 +4,56 @@ import type { AvailabilityFormValues, ScheduleProfile } from "..";
 import { trpc } from "../../../../../utils/trpc";
 import { useStateMachine } from "little-state-machine";
 
-const ConfirmTab = () => {
+const ConfirmTab = ({
+  onCreate,
+}: {
+  onCreate: (payload: AvailabilityFormValues & ScheduleProfile) => void;
+}) => {
   const { state } = useStateMachine();
-  const { mutate } = trpc.schedule.create.useMutation();
+  const { timeZone, availability } = state.data;
+  const { title, description, chatTime } = state.data;
 
-  console.log(state);
   const handleCreateSchedule = () => {
-    // const newSchedule = {
-    //   ...profileValues,
-    //   ...availabilityValues,
-    // };
-    // mutate(newSchedule);
+    const newSchedule = {
+      ...state.data,
+    };
+    onCreate(newSchedule);
   };
 
-  // const availableTimes = Object.entries(availabilityValues.availability).map(
-  //   (time) => {
-  //     const [date, { to, from }] = time;
-  //     return (
-  //       <div key={date}>
-  //         <span>{`${date}: ${from} - ${to}`}</span>
-  //       </div>
-  //     );
-  //   }
-  // );
+  const availableTimes = Object.entries(availability).map((time) => {
+    const [date, { to, from }] = time;
+    return (
+      <div key={date}>
+        <span>{`${date}: ${from} - ${to}`}</span>
+      </div>
+    );
+  });
   return (
     <>
-      <span>Your schedule details</span>
-      <div className="wi-full flex justify-between">
-        {/* <div>
-          <span className="inline-flex">{profileValues.title}</span>
-          <span className="inline-flex">{profileValues.description}</span>
-          <span className="inline-flex">{profileValues.chatTime}</span>
+      <h2 className="mt-5 text-yellow-50">
+        Have a quick check of your schedule details❗️
+      </h2>
+      <div className="mt-3 flex min-h-[300px] w-full rounded-md bg-neutral-700 p-3">
+        <div className="flex flex-col gap-3 text-yellow-50">
+          <span className="inline-block">Title: {title}</span>
+          <span className="inline-block">Description: {description}</span>
+          <span className="inline-block">ChatTime: {chatTime}</span>
+          <div className="flex flex-col gap-3">
+            <span className="inline-block">TimeZone: {timeZone}</span>
+            <div>
+              <span>Available Time: </span>
+              {availableTimes}
+            </div>
+          </div>
         </div>
-        <div>
-          <span className="inline-flex">{availabilityValues.timeZone}</span>
-          {availableTimes}
-        </div> */}
       </div>
-      {/* <button onClick={handleCreateSchedule}>추가하기</button> */}
+      <div></div>
+
+      <div className="mt-5 flex w-full justify-end">
+        <button className="brand_button" onClick={handleCreateSchedule}>
+          Create
+        </button>
+      </div>
     </>
   );
 };
