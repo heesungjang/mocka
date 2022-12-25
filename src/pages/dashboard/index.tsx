@@ -9,6 +9,7 @@ import ContentLayout from "../../components/layouts/ContentLayout";
 import { SkeletonLoader } from "../../components/feature/dashboard/lodaer/ScheduleLoader";
 import { createStore } from "little-state-machine";
 import { StateMachineProvider } from "little-state-machine";
+import ScheduleDetail from "../../components/feature/dashboard/schedule/ScheduleDetail";
 
 function DashBoard({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { data: scheduleData, isLoading: isScheduleLoading } =
@@ -41,47 +42,6 @@ function DashBoard({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 }
 
 DashBoard.Layout = SideBarLayout;
-
-const ScheduleDetail = () => {
-  const { data: scheduleData } = trpc.schedule.get.useQuery();
-  const { data: userData } = trpc.auth.getFullUserDetail.useQuery();
-  return (
-    <div>
-      <div className="flex items-center gap-4">
-        <Image
-          src="/assets/defaultAvatar.png"
-          width={32}
-          height={32}
-          alt=""
-          className="mb-1 rounded-full"
-        />
-        <div className="flex flex-col justify-center">
-          <span className="text-neutral-black text-sm font-semibold capitalize">
-            {userData?.name ?? "Anonymous"}
-          </span>
-          <span className="text-sm font-light text-neutral-500">
-            {userData?.email}
-          </span>
-        </div>
-      </div>
-      <div className="mt-10 flex flex-col">
-        <span>bio: {userData?.bio ?? "기본 인사말"}</span>
-        <span>title: {scheduleData?.title}</span>
-        <span>chatTime: {scheduleData?.chatTime}</span>
-        <span>description: {scheduleData?.description}</span>
-        <span>timeZone: {scheduleData?.timeZone}</span>
-      </div>
-
-      <div className="mt-10 flex flex-col">
-        {scheduleData?.availability.map((day) => (
-          <span key={day.id}>
-            {day.date}: {day.from} - {day.to}{" "}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-};
 
 const EmptyMsg = () => (
   <div className="flex  min-h-[300px] w-full flex-col items-center justify-center">
