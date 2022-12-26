@@ -26,8 +26,10 @@ const ScheduleDetail = () => {
       <div className="mt-10 flex flex-col">
         <span>bio: {userData?.bio ?? "기본 인사말"}</span>
         <span>title: {scheduleData?.title}</span>
+        <span>title: {userData?.calLink}</span>
         <span>chatTime: {scheduleData?.chatTime}</span>
         <span>description: {scheduleData?.description}</span>
+        <span>timeZone: {scheduleData?.timeZone}</span>
         <span>timeZone: {scheduleData?.timeZone}</span>
       </div>
 

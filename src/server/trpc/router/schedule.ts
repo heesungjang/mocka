@@ -1,7 +1,7 @@
-import { z, infer } from "zod";
-import { ScheduleAvailability } from "../../../components/feature/dashboard/createModal";
-
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { z } from "zod";
+import * as short from "short-uuid";
+import { router, protectedProcedure } from "../trpc";
+import { getNamedMiddlewareRegex } from "next/dist/shared/lib/router/utils/route-regex";
 
 export const scheduleRouter = router({
   create: protectedProcedure
@@ -22,6 +22,7 @@ export const scheduleRouter = router({
     .mutation(async ({ input, ctx }) => {
       const { title, description, chatTime, timeZone, availability } = input;
       const userId = ctx.session.user.id;
+      const username = ctx.session.user.name?.replaceAll(" ", "");
 
       const { id } = await ctx.prisma.schedule.create({
         data: {
@@ -43,6 +44,17 @@ export const scheduleRouter = router({
             to,
           },
         });
+      });
+
+      const uniqueCalenderId = `${username}-${userId}-${short.generate()}`;
+
+      await ctx.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          calLink: uniqueCalenderId,
+        },
       });
 
       return await Promise.all(availabilities);
