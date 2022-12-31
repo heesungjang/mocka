@@ -25,11 +25,13 @@ export default function CalDetail({
         </div>
       </div>
 
-      <div className="mt-5 flex h-full flex-col justify-between  gap-2">
-        <p className="text-lg text-white">{schedule.title}</p>
-        <p className="text-md text-white">{schedule.description}</p>
+      <div className="mt-5 flex h-full flex-col justify-between">
+        <div className="mt-3 flex flex-col gap-2">
+          <p className="text-md text-white">{schedule.title}</p>
+          <p className="text-sm text-white">{schedule.description}</p>
+        </div>
 
-        <div className="mt-5 text-sm">
+        <div className="text-sm">
           <div className="mb-3 mt-1 flex items-center gap-3 pr-2">
             <FiVideo />
             <p>Video Call</p>
@@ -40,7 +42,7 @@ export default function CalDetail({
             <p>{schedule.chatTime} Minutes</p>
           </div>
 
-          <div className="text-small relative mt-1 flex  items-center gap-3 rounded-md pr-2 hover:bg-neutral-800">
+          <div className="text-small relative mt-1 flex  items-center gap-3 rounded-md px-2 hover:bg-neutral-800">
             <FiGlobe />
             <TimezoneSelect
               labelStyle="abbrev"

@@ -9,7 +9,7 @@ export default function CalCustom() {
   const { month, year, days } = calendars[0];
 
   return (
-    <section className="h-full md:min-w-[300px]  lg:min-w-[455px]">
+    <section className="h-full min-w-[300px]">
       <header>
         <div className="flex w-full justify-between">
           <div className="flex items-center gap-2">
@@ -25,19 +25,24 @@ export default function CalCustom() {
             </button>
           </div>
         </div>
-        <ul className="mb-2 mt-7 grid grid-cols-7 gap-4 text-center text-sm uppercase text-white/80">
+        <ul className="mb-2 mt-7 grid grid-cols-7 gap-3 px-1 text-center text-sm uppercase text-white/80">
           {weekDays.map((day) => (
             <li key={`${month}-${day}`}>{day}</li>
           ))}
         </ul>
       </header>
-      {/* <ul>
+      <ul className="relative grid grid-cols-7 gap-1 text-center">
         {days.map((dpDay) => (
-          <li key={`${month}-${dpDay.date}`}>
-            <button>{dpDay.day}</button>
+          <li
+            className="rounded-md border border-transparent bg-brand_bg/80 p-2 transition-all duration-100 hover:border-white"
+            key={`${month}-${dpDay.date}`}
+          >
+            <button className="text-sm font-light text-neutral-400">
+              {dpDay.day}
+            </button>
           </li>
         ))}
-      </ul> */}
+      </ul>
     </section>
   );
 }
