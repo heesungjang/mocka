@@ -104,9 +104,8 @@ const DashModal = () => {
   return (
     <Modal>
       <ModalOpenButton>
-        <button className=" inline-flex h-10 items-center rounded-md bg-brand_color px-6  text-sm font-semibold text-black/80 hover:bg-yellow-200">
-          New
-          <FiPlus className="ml-3" strokeWidth={3} />
+        <button className=" inline-flex h-10 items-center justify-center rounded-[50px] bg-green-200  px-6 text-sm font-semibold text-black/80 transition-all duration-150 hover:rounded-md">
+          Create new
         </button>
       </ModalOpenButton>
       <ModalContents title="Create new schedule">
@@ -141,7 +140,7 @@ const DashModal = () => {
                     "text-sm font-medium  text-yellow-50",
                     "outline-none transition-all  duration-200 ",
                     selected
-                      ? " text-brand_color underline underline-offset-4"
+                      ? " text-green-200 underline underline-offset-4"
                       : ""
                   )
                 }

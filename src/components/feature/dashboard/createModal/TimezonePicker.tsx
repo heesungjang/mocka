@@ -19,7 +19,7 @@ const TimeZonePicker = () => {
                 marginBottom: "10px",
                 borderColor: "#404040",
                 "&:hover": {
-                  borderColor: "#FDE68A",
+                  borderColor: "#bbf7d0",
                 },
                 cursor: "pointer",
                 backgroundColor: "#404040",
@@ -48,13 +48,13 @@ const TimeZonePicker = () => {
                   ...styles,
                   fontSize: "14px",
                   color: isSelected ? "black" : "rgb(254 252 232)",
-                  background: isSelected ? "#FDE68A" : "#404040",
+                  background: isSelected ? "#bbf7d0" : "#404040",
                   cursor: isDisabled ? "not-allowed" : "default",
                   "&:active": {
                     background: "rgb(245 245 245)",
                   },
                   "&:hover": {
-                    background: !isSelected ? "#1F1F23" : "#FDE68A",
+                    background: !isSelected ? "#525252" : "#bbf7d0",
                   },
                 };
               },

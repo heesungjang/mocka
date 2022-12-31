@@ -18,14 +18,21 @@ export default function Welcome({}: InferGetServerSidePropsType<
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex min-h-screen flex-col items-center justify-center bg-brand_bg antialiased">
+      <main className="flex min-h-screen flex-col items-center  bg-black antialiased">
         <div className="container relative flex max-w-lg flex-col items-center justify-center gap-12 px-4 py-16 md:max-w-3xl">
+          <Image
+            className="mt-24"
+            src="/assets/logo.png"
+            width={90}
+            height={90}
+            alt=""
+          />
           <span className=" absolute left-10 text-2xl md:left-10 md:top-5 md:text-5xl">
             {/* <Image src="/assets/logo.png" width={50} height={50} alt="" /> */}
           </span>
-          <h1 className="text-center text-5xl font-extrabold leading-snug tracking-tight text-yellow-50 md:text-[5rem]">
-            Spend Valuable Minutes In{" "}
-            <span className="decoration-brand_color underline decoration-2 underline-offset-8">
+          <h1 className="text-center text-5xl font-extrabold leading-snug tracking-tight text-white md:text-[5rem]">
+            Spend Valuable Time In{" "}
+            <span className="underline decoration-green-200 decoration-2 underline-offset-8">
               Mocka
             </span>
           </h1>

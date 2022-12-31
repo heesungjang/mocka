@@ -3,6 +3,7 @@ import { type Provider } from "next-auth/providers";
 import { getProviders, signIn } from "next-auth/react";
 import { type NextPage, type GetServerSideProps } from "next";
 import { FcGoogle } from "react-icons/fc";
+import Image from "next/image";
 
 interface ISignIn {
   providers: Provider[];
@@ -10,17 +11,23 @@ interface ISignIn {
 const SignIn: NextPage<ISignIn> = ({ providers }) => {
   const [email, setEmail] = useState("");
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-brand_bg">
-      <div className="flex flex-col items-start">
-        <h1 className="mb-5 text-center text-6xl font-extrabold tracking-tight text-yellow-50 ">
+    <main className="flex min-h-screen flex-col items-center bg-black">
+      <Image
+        className="mt-24"
+        src="/assets/logo.png"
+        width={90}
+        height={90}
+        alt=""
+      />
+      <div className="mt-20 flex flex-col items-center">
+        <h1 className="mb-5 text-center text-6xl font-extrabold tracking-tight text-white ">
           Happening Now,
         </h1>
-        <span className="text-center text-3xl font-extrabold tracking-tight text-yellow-50">
-          Join{" "}
-          <span className="decoration-brand_color text-yellow-50 underline decoration-2 underline-offset-8">
+        <span className="text-center text-3xl font-extrabold tracking-tight text-white">
+          everybody loves{" "}
+          <span className="text-white underline decoration-green-200 decoration-2 underline-offset-8">
             Mocka
           </span>{" "}
-          Today
         </span>
       </div>
 
@@ -33,16 +40,16 @@ const SignIn: NextPage<ISignIn> = ({ providers }) => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <button
-          className="bg-brand_color mt-5 inline-flex items-center justify-center rounded-md px-10 py-3  font-semibold  capitalize text-black/80 no-underline transition hover:bg-yellow-200"
+          className="mt-5 inline-flex items-center justify-center rounded-md bg-green-200 px-10 py-3  font-semibold  capitalize text-black/80 no-underline transition "
           onClick={() => signIn("email", { email, callbackUrl: "/dashboard" })}
         >
           Email a login link
         </button>
 
         <div className="relative flex items-center py-5">
-          <div className="flex-grow border-t border-yellow-50"></div>
-          <span className="mx-4 flex-shrink text-yellow-50">or</span>
-          <div className="flex-grow border-t border-yellow-50"></div>
+          <div className="flex-grow border-t border-white"></div>
+          <span className="mx-4 flex-shrink text-white">or</span>
+          <div className="flex-grow border-t border-white"></div>
         </div>
 
         <div className="">

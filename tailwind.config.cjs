@@ -12,9 +12,9 @@ module.exports = {
     },
     colors: {
       ...colors,
-      brand_bg: "#18181B",
-      brand_sub_bg: "#1F1F23",
-      brand_color: "#FDE68A",
+      brand_bg: "#222222",
+      brand_sub_bg: "#3B3B3B",
+      brand_color: "#B2DABB",
       brand_bg_dark: "#151618",
     },
   },

@@ -4,12 +4,15 @@
 
 @layer components {
   .brand_input {
-    @apply w-full appearance-none rounded border-2 border-neutral-700 bg-neutral-700 py-2 px-4 leading-tight text-yellow-50 placeholder-neutral-400 shadow-sm transition-all duration-200 focus:border-brand_color focus:bg-brand_bg focus:outline-none;
+    @apply w-full appearance-none rounded border-2 border-neutral-700 bg-neutral-700 py-2 px-4 leading-tight text-white placeholder-neutral-400 shadow-sm transition-all duration-200 focus:border-green-200 focus:bg-brand_bg focus:outline-none;
   }
   .brand_button {
-    @apply inline-flex h-10 items-center rounded-md bg-brand_color px-6  text-sm font-semibold text-black/80 hover:bg-yellow-200;
+    @apply inline-flex h-10 items-center rounded-md bg-green-200 px-6  text-sm font-semibold text-black;
   }
   .dismiss_button {
-    @apply absolute top-5 right-7 inline-flex justify-center rounded-md border border-transparent bg-brand_bg px-2 py-1 text-sm font-medium text-yellow-50  hover:bg-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2;
+    @apply absolute top-5 right-7 inline-flex justify-center rounded-md border border-transparent bg-brand_sub_bg px-2 py-1 text-sm font-medium text-white  hover:bg-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2;
+  }
+  .cal_section {
+    @apply flex justify-center  rounded-md  border  border-neutral-400 bg-brand_sub_bg p-5;
   }
 }

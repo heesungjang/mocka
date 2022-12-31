@@ -1,4 +1,3 @@
-import "../styles/globals.css";
 import { trpc } from "../utils/trpc";
 import { Inter } from "@next/font/google";
 import { SessionProvider } from "next-auth/react";
@@ -6,6 +5,8 @@ import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import type { NextPage } from "next";
 import type { ScriptProps } from "next/script";
+
+import "../styles/globals.css";
 
 type Page<P = Record<string, never>> = NextPage<P> & {
   Layout: (page: ScriptProps) => JSX.Element;

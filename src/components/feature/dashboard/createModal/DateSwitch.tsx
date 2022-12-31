@@ -60,14 +60,14 @@ const DateSwitch = ({
         checked={dates[date]}
         onChange={handleToggle}
         className={`${
-          isOpen ? "border-brand_color " : "border-yellow-50"
+          isOpen ? "border-green-200 " : "border-yellow-50"
         } relative inline-flex h-5 w-9 items-center rounded-full border-2 bg-black`}
       >
         <span className="sr-only">Enable notifications</span>
         <span
           className={`${
             isOpen
-              ? "translate-x-4 bg-brand_color"
+              ? "translate-x-4 bg-green-200"
               : "translate-x-1 bg-yellow-50"
           } inline-block h-3 w-3 transform rounded-full  transition duration-200`}
         />

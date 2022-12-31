@@ -35,10 +35,7 @@ const ProfileTab = ({
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="flex flex-col">
-        <label
-          htmlFor="title"
-          className="mb-2 text-sm font-normal text-yellow-50"
-        >
+        <label htmlFor="title" className="mb-2 text-sm font-normal text-white">
           Title
         </label>
         <input
@@ -53,7 +50,7 @@ const ProfileTab = ({
       <div className="flex flex-col">
         <label
           htmlFor="description"
-          className="mt-4 mb-2 text-sm font-normal text-yellow-50"
+          className="mt-4 mb-2 text-sm font-normal text-white"
         >
           Description
         </label>
@@ -67,7 +64,7 @@ const ProfileTab = ({
         <ErrorMessage msg={errors?.description?.message} />
       </div>
 
-      <label className="mt-4 inline-block text-sm font-normal text-yellow-50">
+      <label className="mt-4 inline-block text-sm font-normal text-white">
         Chat Time
       </label>
       <div className="mt-2 mb-12">
@@ -83,15 +80,15 @@ const ProfileTab = ({
                       key={slot}
                       value={slot}
                       className={({ checked }) =>
-                        `${checked ? "bg-brand_color" : "bg-brand_bg"}
-                    relative flex cursor-pointer rounded-lg px-4 py-2 focus:outline-none`
+                        `${checked ? "bg-green-200" : "bg-brand_sub_bg hover:bg-neutral-700"}
+                    relative flex cursor-pointer rounded-lg px-4 py-2  focus:outline-none`
                       }
                     >
                       {({ checked }) => (
                         <RadioGroup.Label
                           as="p"
                           className={`text-sm font-medium ${
-                            checked ? "text-black" : "text-yellow-50"
+                            checked ? "text-black" : "text-white"
                           }`}
                         >
                           {slot} min

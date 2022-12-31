@@ -9,7 +9,7 @@ import ContentLayout from "../../components/layouts/ContentLayout";
 import { SkeletonLoader } from "../../components/feature/dashboard/lodaer/ScheduleLoader";
 import { createStore } from "little-state-machine";
 import { StateMachineProvider } from "little-state-machine";
-import ScheduleDetail from "../../components/feature/dashboard/schedule/ScheduleDetail";
+import DetailBox from "../../components/feature/dashboard/schedule/DetailBox";
 
 function DashBoard({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { data: scheduleData, isLoading: isScheduleLoading } =
@@ -24,18 +24,13 @@ function DashBoard({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     <ContentLayout
       title="Dashboard"
       subTitle="Create events to share for people to book on your calendar."
-      modal={
-        <StateMachineProvider>
-          <DashBoardModal />
-        </StateMachineProvider>
-      }
     >
-      <span className="text-md mt-8 mb-3 inline-flex items-center font-semibold text-yellow-50 md:mt-12">
-        <FiCalendar className="mr-1" /> My schedule detail
+      <span className="text-md mt-8 mb-3 inline-flex items-center font-semibold text-white md:mt-12">
+        <FiCalendar className="mr-1" size={20} /> Schedule
       </span>
-      <div className="border-1  flex min-h-[320px]  w-full flex-col rounded-lg border border-solid border-white/5 p-6">
+      <div className="border-1  flex min-h-[320px]  w-full flex-col rounded-lg border border-solid border-yellow-50/10 p-6">
         {!scheduleData && <EmptyMsg />}
-        {scheduleData && <ScheduleDetail />}
+        {scheduleData && <DetailBox />}
       </div>
     </ContentLayout>
   );
@@ -44,11 +39,19 @@ function DashBoard({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 DashBoard.Layout = SideBarLayout;
 
 const EmptyMsg = () => (
-  <div className="flex  min-h-[300px] w-full flex-col items-center justify-center">
-    <FiMoreHorizontal className="mb-5 text-brand_color" size={35} />
-    <span className="text-md text-center font-semibold text-yellow-50">
-      You don&apos;t have a mocka schedule yet.
-    </span>
+  <div className="flex  min-h-[300px] w-full flex-col items-center justify-center ">
+    <div className="mb-10 flex flex-col items-center gap-3">
+      <span className="text-4xl">🖐</span>
+      <span className="text-md text-center font-normal text-white">
+        Ready to create new schedule?
+      </span>
+      <span className="text-sm text-neutral-400">
+        Click &quot;Create new&quot; to start creating your mocka schedule.
+      </span>
+    </div>
+    <StateMachineProvider>
+      <DashBoardModal />
+    </StateMachineProvider>
   </div>
 );
 

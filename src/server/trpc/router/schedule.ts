@@ -46,14 +46,14 @@ export const scheduleRouter = router({
         });
       });
 
-      const uniqueCalenderId = `${username}-${userId}-${short.generate()}`;
+      const uniqueCalendarId = `${username}-${userId}-${short.generate()}`;
 
       await ctx.prisma.user.update({
         where: {
           id: userId,
         },
         data: {
-          calLink: uniqueCalenderId,
+          calLink: uniqueCalendarId,
         },
       });
 

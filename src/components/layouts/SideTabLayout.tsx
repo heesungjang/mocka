@@ -5,14 +5,14 @@ import cn from "classnames";
 import { FiLayout } from "react-icons/fi";
 import { FiClock } from "react-icons/fi";
 import { FiSettings } from "react-icons/fi";
-import Image from "next/image";
 import { type ReactNode } from "react";
+import Image from "next/image";
 
 export default function SideBarLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex">
       <SideNavTab />
-      <div className="relative h-screen flex-1   bg-brand_bg_dark  px-12 py-10">
+      <div className="relative h-screen flex-1   bg-brand_bg  px-12 py-10">
         {children}
       </div>
     </div>
@@ -29,22 +29,19 @@ const SideNavTab = () => {
   return (
     <div className=" relative h-screen w-16 bg-brand_sub_bg px-3 pt-6 md:w-56">
       <NextLink href="/dashboard" className="flex items-center ">
-        {/* <Image
-          className="md:ml-2 md:mr-3 md:mb-1"
-          src="/assets/logo.png"
-          alt=""
-          width={32}
-          height={32}
-        /> */}
-        <h1 className="text-md hidden origin-left  pl-2 text-2xl font-semibold  text-yellow-50 duration-200 md:block">
-          <span className="capitalize underline decoration-brand_color underline-offset-4">
+        <h1 className="text-md hidden origin-left  pl-2 text-2xl font-semibold  text-white duration-200 md:block">
+          <span className="capitalize underline decoration-green-200 underline-offset-4">
             Mocka
           </span>
           .com
         </h1>
-        <div className="flex h-10 w-full items-center justify-center rounded-full bg-brand_color text-2xl font-semibold text-black md:hidden">
-          M
-        </div>
+        <Image
+          src="/assets/logo.png"
+          width={50}
+          height={25}
+          alt=""
+          className="flex rounded-full md:hidden"
+        />
       </NextLink>
       <div className="flex h-[92%] flex-col justify-between pt-5">
         <div>
@@ -73,30 +70,41 @@ const NavItem = ({ href = "", text = "" }: { href: string; text: string }) => {
     <div
       className={cn(
         isActive
-          ? "bg-neutral-700 font-normal text-black"
-          : "font-normal text-neutral-500 hover:bg-neutral-700/20",
+          ? "bg-neutral-600 font-normal"
+          : "font-normal text-neutral-500 hover:bg-neutral-700",
         "mb-2 flex cursor-pointer items-center justify-center  rounded-lg p-1 px-2 py-2 transition-all md:flex md:items-center md:justify-start md:px-3 md:py-2"
       )}
       onClick={() => handleNav()}
     >
-      {renderIcons(text)}
-      <span className="capsize ml-2 hidden text-yellow-50 md:block">
+      {renderIcons(text, isActive)}
+      <span
+        className={cn(
+          isActive ? "text-white" : "text-neutral-400",
+          "capsize ml-2 hidden  md:block"
+        )}
+      >
         {text}
       </span>
     </div>
   );
 };
 
-const renderIcons = (text: string) => {
+const renderIcons = (text: string, isActive: boolean) => {
   switch (text) {
     case "Dashboard": {
-      return <FiLayout color="rgb(254 252 232)" />;
+      return (
+        <FiLayout className={isActive ? "text-white" : "text-neutral-400"} />
+      );
     }
     case "Bookings": {
-      return <FiClock color="rgb(254 252 232)" />;
+      return (
+        <FiClock className={isActive ? "text-white" : "text-neutral-400"} />
+      );
     }
     case "Settings": {
-      return <FiSettings color="rgb(254 252 232)" />;
+      return (
+        <FiSettings className={isActive ? "text-white" : "text-neutral-400"} />
+      );
     }
   }
 };

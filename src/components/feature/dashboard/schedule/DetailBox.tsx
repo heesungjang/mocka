@@ -1,12 +1,13 @@
 import { trpc } from "../../../../utils/trpc";
 import Image from "next/image";
+import Link from "next/link";
 
-const ScheduleDetail = () => {
+const DetailBox = () => {
   const { data: scheduleData } = trpc.schedule.get.useQuery();
   const { data: userData } = trpc.auth.getFullUserDetail.useQuery();
   return (
-    <div>
-      <div className="flex items-center gap-4">
+    <div className="text-white">
+      <div className="flex items-center gap-4 ">
         <Image
           src="/assets/defaultAvatar.png"
           width={32}
@@ -26,7 +27,13 @@ const ScheduleDetail = () => {
       <div className="mt-10 flex flex-col">
         <span>bio: {userData?.bio ?? "기본 인사말"}</span>
         <span>title: {scheduleData?.title}</span>
-        <span>title: {userData?.calLink}</span>
+        <Link
+          href={`/cal/${userData?.calLink}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          cal link: {userData?.calLink}
+        </Link>
         <span>chatTime: {scheduleData?.chatTime}</span>
         <span>description: {scheduleData?.description}</span>
         <span>timeZone: {scheduleData?.timeZone}</span>
@@ -44,4 +51,4 @@ const ScheduleDetail = () => {
   );
 };
 
-export default ScheduleDetail;
+export default DetailBox;
