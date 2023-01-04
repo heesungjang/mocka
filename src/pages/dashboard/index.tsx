@@ -2,7 +2,7 @@ import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import { getSession } from "next-auth/react";
 import SideBarLayout from "../../components/layouts/SideTabLayout";
-import DashBoardModal from "../../components/feature/dashboard/createModal";
+import DashBoardModal from "../../components/feature/dashboard/modal";
 import { FiCalendar, FiMoreHorizontal } from "react-icons/fi";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import ContentLayout from "../../components/layouts/ContentLayout";

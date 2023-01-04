@@ -26,18 +26,18 @@ export default function CalDetail({
       </div>
 
       <div className="mt-5 flex h-full flex-col justify-between">
-        <div className="mt-3 flex flex-col gap-2">
+        <div className="mt-3 flex flex-col gap-2 pl-2">
           <p className="text-md text-white">{schedule.title}</p>
           <p className="text-sm text-white">{schedule.description}</p>
         </div>
 
         <div className="text-sm">
-          <div className="mb-3 mt-1 flex items-center gap-3 pr-2">
+          <div className="mb-3 mt-1 flex items-center gap-3 px-2">
             <FiVideo />
             <p>Video Call</p>
           </div>
 
-          <div className="flex items-center gap-3 pr-2">
+          <div className="flex items-center gap-3 px-2">
             <FiClock />
             <p>{schedule.chatTime} Minutes</p>
           </div>
@@ -63,7 +63,6 @@ const TimeZonePickerStyleConfig = {
     state: ControlProps<unknown, boolean, GroupBase<unknown>>
   ) => ({
     ...baseStyles,
-
     border: "none",
     cursor: "pointer",
     backgroundColor: "",
@@ -97,8 +96,7 @@ const TimeZonePickerStyleConfig = {
     padding: "0px 10px",
     paddingTop: "5px",
     background: "#222222",
-    borderRadius: "1rem",
-  }),
+    borderRadius: "1rem",}),
   option: (
     styles: CSSObjectWithLabel,
     {

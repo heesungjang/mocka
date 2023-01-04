@@ -25,7 +25,7 @@ export default function CalCustom() {
             </button>
           </div>
         </div>
-        <ul className="mb-2 mt-7 grid grid-cols-7 gap-3 px-1 text-center text-sm uppercase text-white/80">
+        <ul className="mb-5 mt-7 grid grid-cols-7 gap-3 px-1 text-center text-sm uppercase text-white/80">
           {weekDays.map((day) => (
             <li key={`${month}-${day}`}>{day}</li>
           ))}
